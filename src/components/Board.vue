@@ -169,6 +169,19 @@ export default {
  
         // int val = rand.nextInt(10) == 0 ? 4 : 2;
         // tiles[row][col] = new Tile(val);
+        let pos = Math.floor(Math.random() + (SIZE * SIZE - 1));
+        let row;
+        let col;
+        do {
+            pos = (pos + 1) % (SIZE * SIZE);
+            row = Math.floor(row / SIZE);
+            col = pos % SIZE;
+        } while (this.tiles[row][col].value !== -1);
+        let val = Math.random() < 0.25 ? 4 : 2;
+        this.tiles[row].$set(col, {
+            value: val,
+            merged: false
+        });
     }
   }
 };
