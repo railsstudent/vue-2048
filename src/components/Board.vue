@@ -13,14 +13,20 @@
 <script>
 
 const STATE = {
-    start: 'START',
-    won: 'WON',
-    running: 'RUNNING',
-    over: 'OVER'
+    start: "START",
+    won: "WON",
+    running: "RUNNING",
+    over: "OVER"
 };
 const TARGET = 2048;
-
 const SIZE = 4;
+const KEYCODE = {
+    up: 38,
+    down: 40,
+    left: 37,
+    right: 39
+};
+
 export default {
   name: "Board",
   props: {
@@ -51,8 +57,7 @@ export default {
             let j = Math.abs(countDownFrom - i);
             let r = Math.floor(j / SIZE);
             let c = j % SIZE;
-            // console.log('r', r, 'c', c);
-            
+
             if (tiles[r][c].value === -1) {
                 continue;
             }
@@ -127,11 +132,11 @@ export default {
     },
     mergeWith: function(tiles, nextR, nextC, r, c) {
         if (this.canMergeWith(tiles[r][c], tiles[nextR][nextC]) === true) {
-            tiles[nextR].$set(nextC, { 
+            tiles[nextR].$set(nextC, {
                 value: tiles[r][c].value * 2,
                 merged: true
             });
-            tiles[r].$set(c, { 
+            tiles[r].$set(c, {
                 value: -1,
                 merged: false
             });
@@ -153,23 +158,47 @@ export default {
     movesAvailable: function() {
         this.checkingAvailableMoves = true;
         const tilesCopy = JSON.parse(JSON.stringify(this.tiles));
-        const hasMoves = this.moveUp(tilesCopy) || this.moveDown(tilesCopy) 
+        const hasMoves = this.moveUp(tilesCopy) || this.moveDown(tilesCopy)
             || this.moveLeft(tilesCopy) || this.moveRight(tilesCopy);
         this.checkingAvailableMoves = false;
         return hasMoves;
     },
     addRandomTile: function() {
-        // int pos = rand.nextInt(side * side);
-        // int row, col;
-        // do {
-        //     pos = (pos + 1) % (side * side);
-        //     row = pos / side;
-        //     col = pos % side;
-        // } while (tiles[row][col] != null);
- 
-        // int val = rand.nextInt(10) == 0 ? 4 : 2;
-        // tiles[row][col] = new Tile(val);
+        let pos = Math.floor(Math.random() + (SIZE * SIZE - 1));
+        let row;
+        let col;
+        do {
+            pos = (pos + 1) % (SIZE * SIZE);
+            row = Math.floor(row / SIZE);
+            col = pos % SIZE;
+        } while (this.tiles[row][col].value !== -1);
+        let val = Math.random() < 0.1 ? 4 : 2;
+        this.tiles[row].$set(col, {
+            value: val,
+            merged: false
+        });
     }
+  },
+  created: function() {
+      document.addEventListener("keyup", function(e) {
+          const code = e.which || e.keyCode;
+          switch(code) {
+            case KEYCODE.up:
+                this.moveUp();
+                break;
+            case KEYCODE.down:
+                this.moveDown();
+                break;
+            case KEYCODE.left:
+                this.moveLeft();
+                break;
+            case KEYCODE.right:
+                this.moveRight();
+                break;
+            default:
+                break;
+          }
+      });
   }
 };
 </script>
