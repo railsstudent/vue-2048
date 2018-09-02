@@ -7,23 +7,29 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:unit:watch": "vue-cli-service test:unit --watch",
+    "test:e2e": "vue-cli-service test:e2e",
+    "static:coverage": "http-server coverage/lcov-report -p 8888"
   },
   "dependencies": {
-    "vue": "^2.5.17"
+    "vue": "2.5.17"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.1",
-    "@vue/cli-plugin-e2e-cypress": "^3.0.1",
-    "@vue/cli-plugin-eslint": "^3.0.1",
-    "@vue/cli-plugin-unit-jest": "^3.0.1",
-    "@vue/cli-service": "^3.0.1",
-    "@vue/test-utils": "^1.0.0-beta.20",
+    "@vue/cli-plugin-babel": "3.0.1",
+    "@vue/cli-plugin-e2e-cypress": "3.0.1",
+    "@vue/cli-plugin-eslint": "3.0.1",
+    "@vue/cli-plugin-unit-jest": "3.0.1",
+    "@vue/cli-service": "3.0.1",
+    "@vue/test-utils": "1.0.0-beta.20",
     "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "^23.0.1",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.17"
+    "babel-jest": "23.0.1",
+    "eslint-config-prettier": "3.0.1",
+    "eslint-plugin-prettier": "2.6.2",
+    "http-server": "0.11.1",
+    "node-sass": "4.9.0",
+    "prettier": "1.14.2",
+    "sass-loader": "7.0.1",
+    "vue-template-compiler": "2.5.17"
   },
   "eslintConfig": {
     "root": true,
@@ -32,11 +38,18 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential"
+      "plugin:vue/essential",
+      "plugin:prettier/recommended"
     ],
     "rules": {
-      "quotes": ["error", "double"],
-      "semi": ["error", "always"]
+      "quotes": [
+        "error",
+        "double"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
     },
     "parserOptions": {
       "parser": "babel-eslint"
@@ -73,6 +86,15 @@
     "testMatch": [
       "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
     ],
-    "testURL": "http://localhost/"
+    "testURL": "http://localhost/",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.vue",
+      "!src/App.vue"
+    ],
+    "coverageDirectory": "coverage/",
+    "coverageReporters": [
+      "lcov"
+    ]
   }
 }

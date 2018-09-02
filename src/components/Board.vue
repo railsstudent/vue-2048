@@ -12,14 +12,14 @@
 
 <script>
 
-const STATE = {
+export const STATE = {
     start: "START",
     won: "WON",
     running: "RUNNING",
     over: "OVER"
 };
-const TARGET = 2048;
-const SIZE = 4;
+export const SIZE = 4;
+export const TARGET = 2048;
 const KEYCODE = {
     up: 38,
     down: 40,
@@ -51,6 +51,17 @@ export default {
     };
   },
   methods: {
+    assignTile: function(tiles, row, col, value, merged = false) {
+        if (tiles && typeof row !== "undefined" && typeof col !== "undefined"
+            && row >= 0 && row < SIZE && col >= 0 && col < SIZE) {
+            const newRow = tiles[row].slice(0);
+            newRow[col] = {
+                value,
+                merged
+            };
+            this.$set(tiles, row, newRow);
+        }
+    },
     move: function(tiles, countDownFrom, yIncr, xIncr) {
         let moved = false;
         for (let i = 0; i < SIZE * SIZE; i++) {
@@ -64,24 +75,21 @@ export default {
 
             let nextR = r + yIncr;
             let nextC = c + xIncr;
+            // console.log(`r=${r}, c=${c}, nextR=${nextR}, nextC=${nextC}`);
 
             while (nextR >= 0 && nextR < SIZE && nextC >= 0 && nextC < SIZE) {
                 const next = tiles[nextR][nextC];
                 const curr = tiles[r][c];
 
+                // console.log(`r=${r}, c=${c}, nextR=${nextR}, nextC=${nextC}`);
+                // console.log(`next=${next.value}, ${next.merged} curr=${curr.value}, ${curr.merged}`);
+
                 if (next && next.value === -1) {
                     if (this.checkingAvailableMoves === true) {
                         return true;
                     }
-
-                    tiles[nextR].$set(nextC, {
-                        value: curr.value,
-                        merged: false
-                    });
-                    tiles[r].$set(c, {
-                        value: -1,
-                        merged: false
-                    });
+                    this.assignTile(this.tiles, nextR, nextC, curr.value);
+                    this.assignTile(this.tiles, r, c, -1);
                     r = nextR;
                     c = nextC;
                     nextR += yIncr;
@@ -91,7 +99,6 @@ export default {
                     if (this.checkingAvailableMoves === true) {
                         return true;
                     }
-
                     const value = this.mergeWith(tiles, nextR, nextC, r, c);
                     if (value > this.highest) {
                         this.highest = value;
@@ -103,9 +110,12 @@ export default {
                 }
             }
         }
+        // console.log('moved', moved);
         if (moved === true) {
             if (this.highest < TARGET) {
-                this.addRandomTile();
+                const { row, col, value } = this.addRandomTile() || {};
+                this.clearMerged();
+                this.assignTile(this.tiles, row, col, value);
                 if (!this.movesAvailable()) {
                     this.gameState = STATE.over;
                 }
@@ -116,15 +126,27 @@ export default {
         return moved;
     },
     moveUp: function(tiles) {
+        if (typeof tiles === 'undefined' || tiles == null) {
+            tiles = this.tiles;
+        }
         return this.move(tiles, 0, -1, 0);
     },
     moveDown: function(tiles) {
+        if (typeof tiles === 'undefined' || tiles == null) {
+            tiles = this.tiles;
+        }
         return this.move(tiles, SIZE * SIZE - 1, 1, 0);
     },
     moveLeft: function(tiles) {
+        if (typeof tiles === 'undefined' || tiles == null) {
+            tiles = this.tiles;
+        }
         return this.move(tiles, 0, 0, -1);
     },
     moveRight: function(tiles) {
+        if (typeof tiles === 'undefined' || tiles == null) {
+            tiles = this.tiles;
+        }
         return this.move(tiles, SIZE * SIZE - 1, 0, 1);
     },
     canMergeWith: function(curr, next) {
@@ -132,14 +154,8 @@ export default {
     },
     mergeWith: function(tiles, nextR, nextC, r, c) {
         if (this.canMergeWith(tiles[r][c], tiles[nextR][nextC]) === true) {
-            tiles[nextR].$set(nextC, {
-                value: tiles[r][c].value * 2,
-                merged: true
-            });
-            tiles[r].$set(c, {
-                value: -1,
-                merged: false
-            });
+            this.assignTile(this.tiles, nextR, nextC, tiles[r][c].value * 2, true);
+            this.assignTile(this.tiles, r, c, -1);
             return tiles[nextR][nextC].value;
         }
         return -1;
@@ -147,11 +163,8 @@ export default {
     clearMerged: function() {
         for (let i = 0; i < SIZE; i++) {
             for (let j = 0; j < SIZE; j++) {
-                const value = this.tiles[i][j];
-                this.tiles[i].$set(j, {
-                    value,
-                    merged: false
-                });
+                const { value } = this.tiles[i][j];
+                this.assignTile(this.tiles, i, j, value);
             }
         }
     },
@@ -169,34 +182,54 @@ export default {
         let col;
         do {
             pos = (pos + 1) % (SIZE * SIZE);
-            row = Math.floor(row / SIZE);
+            row = Math.floor(pos / SIZE);
             col = pos % SIZE;
         } while (this.tiles[row][col].value !== -1);
-        let val = Math.random() < 0.1 ? 4 : 2;
-        this.tiles[row].$set(col, {
-            value: val,
-            merged: false
-        });
+        let value = Math.random() < 0.1 ? 4 : 2;
+        return {
+            row,
+            col,
+            value
+        };
+    },
+    startGame: function() {
+        if (this.gameState != STATE.running) {
+            this.gameState = STATE.running;
+            const { row: row1, col: col1, value: value1 } = this.addRandomTile() || {};
+            this.assignTile(this.tiles, row1, col1, value1);
+            const { row: row2, col: col2, value: value2 } = this.addRandomTile() || {};
+            this.assignTile(this.tiles, row2, col2, value2);
+        }
+    },
+    clone: function(otherTiles) {
+        for (let i = 0; i < SIZE; i++) {
+            for (let j = 0; j < SIZE; j++) {
+                this.assignTile(this.tiles, i, j, otherTiles[i][j], false);
+            }
+        }
     }
   },
   created: function() {
+      const self = this;
       document.addEventListener("keyup", function(e) {
-          const code = e.which || e.keyCode;
-          switch(code) {
-            case KEYCODE.up:
-                this.moveUp();
-                break;
-            case KEYCODE.down:
-                this.moveDown();
-                break;
-            case KEYCODE.left:
-                this.moveLeft();
-                break;
-            case KEYCODE.right:
-                this.moveRight();
-                break;
-            default:
-                break;
+          if (self.gameState === STATE.running) {
+            const code = e.which || e.keyCode;
+            switch(code) {
+                case KEYCODE.up:
+                    self.moveUp();
+                    break;
+                case KEYCODE.down:
+                    self.moveDown();
+                    break;
+                case KEYCODE.left:
+                    self.moveLeft();
+                    break;
+                case KEYCODE.right:
+                    self.moveRight();
+                    break;
+                default:
+                    break;
+            }
           }
       });
   }

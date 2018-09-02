@@ -25,7 +25,18 @@ yarn run lint
 yarn run test:unit
 ```
 
+### Watch your unit tests
+```
+yarn run test:unit:watch
+```
+
 ### Run your end-to-end tests
 ```
 yarn run test:e2e
 ```
+
+### View code coverage results
+```
+yarn run static:coverage
+```
+Navigate to http://localhost:8888
