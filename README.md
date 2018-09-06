@@ -22,11 +22,13 @@ yarn run lint
 
 ### Run your unit tests
 ```
+./node_modules/jest/bin/jest.js --clearCache
 yarn run test:unit
 ```
 
 ### Watch your unit tests
 ```
+./node_modules/jest/bin/jest.js --clearCache
 yarn run test:unit:watch
 ```
 
