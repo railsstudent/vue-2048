@@ -1,7 +1,10 @@
 <template>
 <div class="container">
     <div class="actions">
-        <button class="btn" v-if="gameState !== 'RUNNING'" v-on:click="startGame">Start Game</button>
+        <div>
+            <div>Score: {{score}}</div>
+            <button class="btn" v-if="gameState !== 'RUNNING'" v-on:click="startGame">Start Game</button>
+        </div>
     </div>
     <div class="tiles">
         <template v-for="row in 4">
@@ -34,9 +37,6 @@ const KEYCODE = {
 
 export default {
   name: "Board",
-  props: {
-    msg: String
-  },
   data: function() {
     const tiles = [];
     for (let i = 0; i < SIZE; i++) {
@@ -52,7 +52,8 @@ export default {
         tiles,
         checkingAvailableMoves: false,
         gameState: STATE.start,
-        highest: -1
+        highest: -1,
+        score: 0
     };
   },
   methods: {
@@ -67,7 +68,7 @@ export default {
             this.$set(tiles, row, newRow);
         }
     },
-    move: function(tiles, countDownFrom, yIncr, xIncr) {
+    move: function(tiles, countDownFrom, yIncr, xIncr, { checkMove }) {
         let moved = false;
         for (let i = 0; i < SIZE * SIZE; i++) {
             let j = Math.abs(countDownFrom - i);
@@ -93,8 +94,8 @@ export default {
                     if (this.checkingAvailableMoves === true) {
                         return true;
                     }
-                    this.assignTile(this.tiles, nextR, nextC, curr.value);
-                    this.assignTile(this.tiles, r, c, -1);
+                    this.assignTile(tiles, nextR, nextC, curr.value);
+                    this.assignTile(tiles, r, c, -1);
                     r = nextR;
                     c = nextC;
                     nextR += yIncr;
@@ -104,9 +105,13 @@ export default {
                     if (this.checkingAvailableMoves === true) {
                         return true;
                     }
+                    const score = tiles[r][c].value;
                     const value = this.mergeWith(tiles, nextR, nextC, r, c);
-                    if (value > this.highest) {
-                        this.highest = value;
+                    if (!checkMove) {
+                        this.score += score;
+                        if (value > this.highest) {
+                            this.highest = value;
+                        }
                     }
                     moved = true;
                     break;
@@ -115,12 +120,17 @@ export default {
                 }
             }
         }
+
+        if (checkMove) {
+            return moved;
+        }
+
         // console.log('moved', moved);
         if (moved === true) {
             if (this.highest < TARGET) {
                 const { row, col, value } = this.addRandomTile() || {};
                 this.clearMerged();
-                this.assignTile(this.tiles, row, col, value);
+                this.assignTile(tiles, row, col, value);
                 if (!this.movesAvailable()) {
                     this.gameState = STATE.over;
                 }
@@ -130,37 +140,37 @@ export default {
         }
         return moved;
     },
-    moveUp: function(tiles) {
+    moveUp: function(tiles, { checkMove = false } = {}) {
         if (typeof tiles === 'undefined' || tiles == null) {
             tiles = this.tiles;
         }
-        return this.move(tiles, 0, -1, 0);
+        return this.move(tiles, 0, -1, 0, { checkMove });
     },
-    moveDown: function(tiles) {
+    moveDown: function(tiles, { checkMove = false } = {}) {
         if (typeof tiles === 'undefined' || tiles == null) {
             tiles = this.tiles;
         }
-        return this.move(tiles, SIZE * SIZE - 1, 1, 0);
+        return this.move(tiles, SIZE * SIZE - 1, 1, 0, { checkMove });
     },
-    moveLeft: function(tiles) {
+    moveLeft: function(tiles, { checkMove = false } = {}) {
         if (typeof tiles === 'undefined' || tiles == null) {
             tiles = this.tiles;
         }
-        return this.move(tiles, 0, 0, -1);
+        return this.move(tiles, 0, 0, -1, { checkMove });
     },
-    moveRight: function(tiles) {
+    moveRight: function(tiles, { checkMove = false } = {}) {
         if (typeof tiles === 'undefined' || tiles == null) {
             tiles = this.tiles;
         }
-        return this.move(tiles, SIZE * SIZE - 1, 0, 1);
+        return this.move(tiles, SIZE * SIZE - 1, 0, 1, { checkMove });
     },
     canMergeWith: function(curr, next) {
         return next.merged === false && curr != null && curr.merged === false && next.value === curr.value;
     },
     mergeWith: function(tiles, nextR, nextC, r, c) {
         if (this.canMergeWith(tiles[r][c], tiles[nextR][nextC]) === true) {
-            this.assignTile(this.tiles, nextR, nextC, tiles[r][c].value * 2, true);
-            this.assignTile(this.tiles, r, c, -1);
+            this.assignTile(tiles, nextR, nextC, tiles[r][c].value * 2, true);
+            this.assignTile(tiles, r, c, -1);
             return tiles[nextR][nextC].value;
         }
         return -1;
@@ -176,14 +186,15 @@ export default {
     movesAvailable: function() {
         this.checkingAvailableMoves = true;
         const tilesCopy = JSON.parse(JSON.stringify(this.tiles));
-        const hasMoves = this.moveUp(tilesCopy) || this.moveDown(tilesCopy)
-            || this.moveLeft(tilesCopy) || this.moveRight(tilesCopy);
+        const hasMoves = this.moveUp(tilesCopy, { checkMove: true })
+            || this.moveDown(tilesCopy, { checkMove: true })
+            || this.moveLeft(tilesCopy, { checkMove: true })
+            || this.moveRight(tilesCopy, { checkMove: true });
         this.checkingAvailableMoves = false;
         return hasMoves;
     },
     addRandomTile: function() {
         let pos = Math.floor(Math.random() * (SIZE * SIZE));
-        console.log('pos', pos);
         let row;
         let col;
         do {
@@ -192,7 +203,6 @@ export default {
             col = pos % SIZE;
         } while (this.tiles[row][col].value !== -1);
         let value = Math.random() < 0.1 ? 4 : 2;
-        console.log ('add', { row, col, value });
         return {
             row,
             col,
@@ -291,7 +301,7 @@ export default {
             background: $background-color;
 
             display: grid;
-            grid-gap: 10px;
+            grid-gap: 15px;
             grid-template-columns: repeat(4, minmax(80px, 120px));
             grid-template-rows: repeat(4, minmax(80px, 120px));
             grid-template-areas: "a b c a4"
@@ -441,6 +451,13 @@ export default {
         }
 
         .actions {
+            border: 1px solid red;
+            padding: 0 20%;
+
+            display: flex;
+            // flex-direction: column;
+            // justify-content: flex-end;
+
             .btn {
                 background-color: $button-color;
                 border-color: $button-color;

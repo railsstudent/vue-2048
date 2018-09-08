@@ -92,11 +92,19 @@ describe("Board.vue", () => {
         value: 2,
         merged: false
       });
-
+      expect(board.vm.score).toEqual(0);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
     it("moveLeft merge two tiles with same value into one", () => {
+      // 1st row of grid is
+      // [ [-1, 2, -1, -1], [-1, 4, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1] ]
+      // move left
+      // [ [2, 2, -1, -1], [4, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1] ]
+      // move left
+      // [ [4, -1, -1, -1], [4, 4, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1] ]
+      // move left
+      // [ [4, -1, -1, -1], [8, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1] ]
       addRandomMockTile
         .mockReturnValueOnce({
           row: 0,
@@ -138,6 +146,7 @@ describe("Board.vue", () => {
         value: -1,
         merged: false
       });
+      expect(board.vm.score).toEqual(0);
 
       board.vm.moveLeft();
       expect(board.vm.tiles[0][0]).toEqual({
@@ -152,6 +161,7 @@ describe("Board.vue", () => {
         value: 4,
         merged: false
       });
+      expect(board.vm.score).toEqual(2);
 
       board.vm.moveLeft();
       expect(board.vm.tiles[0][0]).toEqual({
@@ -166,6 +176,7 @@ describe("Board.vue", () => {
         value: -1,
         merged: false
       });
+      expect(board.vm.score).toEqual(6);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -215,6 +226,7 @@ describe("Board.vue", () => {
         value: 2,
         merged: false
       });
+      expect(board.vm.score).toEqual(2);
 
       board.vm.moveLeft();
       expect(board.vm.tiles[0][0]).toEqual({
@@ -237,6 +249,7 @@ describe("Board.vue", () => {
         value: 2,
         merged: false
       });
+      expect(board.vm.score).toEqual(6);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -279,6 +292,7 @@ describe("Board.vue", () => {
       board.vm.tiles[1][0].merged = false;
       board.vm.tiles[1][1].value = 4;
       board.vm.tiles[1][1].merged = false;
+
       board.vm.moveLeft();
       expect(board.vm.tiles[0][0]).toEqual({
         value: 4,
@@ -320,6 +334,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(8);
 
       board.vm.moveLeft();
       expect(board.vm.tiles[0][0]).toEqual({
@@ -370,6 +385,7 @@ describe("Board.vue", () => {
         value: -1,
         merged: false
       });
+      expect(board.vm.score).toEqual(12);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -440,6 +456,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(1028);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
   });
@@ -493,6 +510,7 @@ describe("Board.vue", () => {
         value: 2,
         merged: false
       });
+      expect(board.vm.score).toEqual(0);
 
       board.vm.moveRight();
       expect(board.vm.tiles[0][3]).toEqual({
@@ -527,6 +545,8 @@ describe("Board.vue", () => {
           merged: false
         });
       }
+      expect(board.vm.score).toEqual(2);
+      expect(board.vm.gameState).toEqual(STATE.running);
     });
 
     it("moveRight does not merge tiles greedily", () => {
@@ -593,6 +613,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(2);
 
       board.vm.moveRight();
       expect(board.vm.tiles[0][3]).toEqual({
@@ -630,6 +651,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(6);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -699,6 +721,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(8);
 
       board.vm.moveRight();
       expect(board.vm.tiles[0][3]).toEqual({
@@ -728,6 +751,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(12);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -798,6 +822,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(1028);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
   });
@@ -851,6 +876,7 @@ describe("Board.vue", () => {
         value: 2,
         merged: false
       });
+      expect(board.vm.score).toEqual(0);
 
       board.vm.moveUp();
       expect(board.vm.tiles[0][1]).toEqual({
@@ -879,6 +905,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(0);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -937,6 +964,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(2);
 
       board.vm.moveUp();
       expect(board.vm.tiles[0][2]).toEqual({
@@ -961,6 +989,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(4);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -1004,6 +1033,7 @@ describe("Board.vue", () => {
       board.vm.tiles[3][3].value = 4;
       board.vm.tiles[3][3].merged = false;
       board.vm.moveUp();
+
       expect(board.vm.tiles[0][1]).toEqual({
         value: 4,
         merged: false
@@ -1030,6 +1060,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(8);
 
       // [ [2, 8, -1, 8], [-1, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1] ]
       board.vm.moveUp();
@@ -1059,6 +1090,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(12);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -1114,6 +1146,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(1024);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
   });
@@ -1182,6 +1215,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(0);
 
       board.vm.moveDown();
       expect(board.vm.tiles[3][1]).toEqual({
@@ -1207,6 +1241,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(2);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -1276,6 +1311,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(4);
 
       // move down
       // [ [-1, -1, -1, -1], [-1, -1, -1, 2], [-1, -1, -1, 2], [-1,  8, -1, 4] ]
@@ -1307,6 +1343,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(8);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -1384,6 +1421,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(6);
 
       board.vm.moveDown();
       expect(board.vm.tiles[2][0]).toEqual({
@@ -1417,6 +1455,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(10);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
 
@@ -1472,6 +1511,7 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.score).toEqual(1024);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
   });
@@ -1581,6 +1621,7 @@ describe("Board.vue", () => {
         value: 4,
         merged: false
       });
+      expect(board.vm.score).toEqual(2);
       expect(board.vm.gameState).toEqual(STATE.over);
     });
   });
