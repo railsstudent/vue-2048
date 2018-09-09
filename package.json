@@ -9,7 +9,8 @@
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "test:e2e": "jest --clearCache && vue-cli-service test:e2e",
-    "static:coverage": "http-server coverage/lcov-report -p 8888"
+    "static:coverage": "http-server coverage/lcov-report -p 8888",
+    "deploy": "NODE_ENV=production ./deploy.sh"
   },
   "dependencies": {
     "vue": "2.5.17"
