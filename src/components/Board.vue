@@ -21,7 +21,8 @@
             </template>
             <div class="overlay" v-bind:class="{ 'show': gameState === 'OVER' || gameState === 'WON' }">
                 <div class="text">
-                    <span>Game Over! Please try again!</span>
+                    <span v-if="gameState === 'OVER'">Game Over! Please try again!</span>
+                    <span v-if="gameState === 'WON'">You Win!</span>
                 </div>
             </div>
         </div>
@@ -237,6 +238,9 @@ export default {
     },
     startGame: function() {
       if (this.gameState != STATE.running) {
+        this.score = 0;
+        this.highest = 0;
+        this.numMoves = 0;
         this.clone([
           [-1, -1, -1, -1],
           [-1, -1, -1, -1],

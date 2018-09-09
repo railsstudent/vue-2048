@@ -92,6 +92,8 @@ describe("Board.vue", () => {
         value: 2,
         merged: false
       });
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(0);
       expect(board.vm.score).toEqual(0);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -176,6 +178,8 @@ describe("Board.vue", () => {
         value: -1,
         merged: false
       });
+      expect(board.vm.numMoves).toEqual(3);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(6);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -249,6 +253,8 @@ describe("Board.vue", () => {
         value: 2,
         merged: false
       });
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(6);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -385,6 +391,8 @@ describe("Board.vue", () => {
         value: -1,
         merged: false
       });
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(12);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -456,6 +464,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(1);
+      expect(board.vm.highest).toEqual(2048);
       expect(board.vm.score).toEqual(1028);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
@@ -545,6 +555,8 @@ describe("Board.vue", () => {
           merged: false
         });
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(4);
       expect(board.vm.score).toEqual(2);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -651,6 +663,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(6);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -751,6 +765,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(12);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -822,6 +838,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(1);
+      expect(board.vm.highest).toEqual(2048);
       expect(board.vm.score).toEqual(1028);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
@@ -905,6 +923,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(0);
       expect(board.vm.score).toEqual(0);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -989,6 +1009,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(4);
       expect(board.vm.score).toEqual(4);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -1090,6 +1112,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(12);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -1146,6 +1170,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(1);
+      expect(board.vm.highest).toEqual(2048);
       expect(board.vm.score).toEqual(1024);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
@@ -1241,6 +1267,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(4);
       expect(board.vm.score).toEqual(2);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -1343,6 +1371,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(8);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -1455,6 +1485,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(2);
+      expect(board.vm.highest).toEqual(8);
       expect(board.vm.score).toEqual(10);
       expect(board.vm.gameState).toEqual(STATE.running);
     });
@@ -1511,6 +1543,8 @@ describe("Board.vue", () => {
           });
         }
       }
+      expect(board.vm.numMoves).toEqual(1);
+      expect(board.vm.highest).toEqual(2048);
       expect(board.vm.score).toEqual(1024);
       expect(board.vm.gameState).toEqual(STATE.won);
     });
@@ -1621,6 +1655,8 @@ describe("Board.vue", () => {
         value: 4,
         merged: false
       });
+      expect(board.vm.numMoves).toEqual(1);
+      expect(board.vm.highest).toEqual(4);
       expect(board.vm.score).toEqual(2);
       expect(board.vm.gameState).toEqual(STATE.over);
     });
