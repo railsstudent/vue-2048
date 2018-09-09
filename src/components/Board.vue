@@ -1,19 +1,30 @@
 <template>
 <div class="container">
-    <div class="actions">
-        <div>
-            <div>Score: {{score}}</div>
-            <button class="btn" v-if="gameState !== 'RUNNING'" v-on:click="startGame">Start Game</button>
-        </div>
-    </div>
-    <div class="tiles">
-        <template v-for="row in 4">
-            <div v-for="col in 4" v-bind:key="'[' + row + ',' + col + ']'" :class="['tile-' + row + '-' + col, 'background-' + tiles[row-1][col-1].value]">
-                <span v-if="tiles[row-1][col-1].value !== -1">
-                    {{tiles[row-1][col-1].value}}
-                </span>
+    <div class="full">
+        <div class="actions">
+            <div class="stats">
+                <div class="score">Num Moves: {{numMoves}}</div>
+                <div class="score">Current highest tile: {{highest}}</div>
+                <div class="score">Score: {{score}}</div>
             </div>
-        </template>
+            <div class="buttons">
+                <button class="btn" v-if="gameState !== 'RUNNING'" v-on:click="startGame">Start Game</button>
+            </div>
+        </div>
+        <div class="tiles">
+            <template v-for="row in 4">
+                <div v-for="col in 4" v-bind:key="'[' + row + ',' + col + ']'" :class="['tile-' + row + '-' + col, 'background-' + tiles[row-1][col-1].value]">
+                    <span v-if="tiles[row-1][col-1].value !== -1">
+                        {{tiles[row-1][col-1].value}}
+                    </span>
+                </div>
+            </template>
+            <div class="overlay" v-bind:class="{ 'show': gameState === 'OVER' || gameState === 'WON' }">
+                <div class="text">
+                    <span>Game Over! Please try again!</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </template>
@@ -53,7 +64,9 @@ export default {
         checkingAvailableMoves: false,
         gameState: STATE.start,
         highest: -1,
-        score: 0
+        score: 0,
+        numMoves: 0,
+        highestTile: 0
     };
   },
   methods: {
@@ -127,6 +140,7 @@ export default {
 
         // console.log('moved', moved);
         if (moved === true) {
+            this.numMoves += 1;
             if (this.highest < TARGET) {
                 const { row, col, value } = this.addRandomTile() || {};
                 this.clearMerged();
@@ -273,25 +287,16 @@ export default {
 
     $color-2: #776e65;
     $color-8: #f9f6f2;
-
     $button-color: #007bff;
 
     .container {
-        width: calc(100% - 100px);
-
-        position: relative;
         display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-
-        margin: 0 50px;
-        border: 1px solid red;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
 
         .tiles {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            position: relative;
 
             width: 500px;
             height: 500px;
@@ -308,7 +313,7 @@ export default {
                                  "a5 a6 a7 a8"
                                  "a9 a10 a11 a12"
                                  "a13 a14 a15 a16";
-            border: 2px solid black;
+            border: 3px solid darken($background-color, 1.5);
 
             .tile-1-1, .tile-1-2, .tile-1-3, .tile-1-4,
             .tile-2-1, .tile-2-2, .tile-2-3, .tile-2-4,
@@ -450,27 +455,76 @@ export default {
             }
         }
 
-        .actions {
-            border: 1px solid red;
-            padding: 0 20%;
-
+        .full {
             display: flex;
-            // flex-direction: column;
-            // justify-content: flex-end;
+            flex-direction: column;
+            align-items: center;
+            width: 50%;
 
-            .btn {
-                background-color: $button-color;
-                border-color: $button-color;
+            .actions {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+
+                .stats {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .score {
+                        padding: 10px 10px;
+                        font-size: 1.2em;
+                        font-weight: bold;
+                    }
+                }
+
+                .buttons {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin: 10px 0
+                }
+
+                .btn {
+                    background-color: $button-color;
+                    border-color: $button-color;
+                    color: #fff;
+                    font-size: 1rem;
+                    border-radius: .25rem;
+                    padding: .375rem .75rem;
+                    font-weight: 400;
+                    text-align: center;
+                    white-space: nowrap;
+                    display: inline-block;
+                    vertical-align: middle;
+                    transition: ease-in-out, background-color .15s
+                }
+            }
+        }
+
+        .overlay {
+            display: none;
+            &.show {
+                display: block;
+                position: absolute;
+                top: 0%;
+                bottom: 0%;
+                left: 0%;
+                right: 0%;
+                z-index: 2;
+                background: rgba(0, 0, 0, 0.7);
+            }
+
+            .text {
+                display: table;
                 color: #fff;
-                font-size: 1rem;
-                border-radius: .25rem;
-                padding: .375rem .75rem;
-                font-weight: 400;
+                font-size: 1.5em;
+                height: 500px;
+                width: 100%;
                 text-align: center;
-                white-space: nowrap;
-                display: inline-block;
-                vertical-align: middle;
-                transition: ease-in-out, background-color .15s
+
+                span {
+                    display: table-cell;
+                    vertical-align: middle;
+                }
             }
         }
     }
