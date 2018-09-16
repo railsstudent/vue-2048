@@ -10,7 +10,8 @@
     "test:unit:watch": "jest --clearCache && vue-cli-service test:unit --watch",
     "test:e2e": "jest --clearCache && vue-cli-service test:e2e",
     "serve:coverage": "http-server coverage/lcov-report -p 8888",
-    "deploy": "NODE_ENV=production ./deploy.sh"
+    "deploy": "NODE_ENV=production ./deploy.sh",
+    "lint:scss": "stylelint *.vue --syntax scss"
   },
   "dependencies": {
     "vue": "2.5.17"
@@ -44,7 +45,7 @@
     }
   },
   "lint-staged": {
-    "*.vue": "stylelint --syntax scss",
+    "*.vue": "npm run lint:scss",
     "*.{js,vue}": [
       "npm run lint",
       "git add"

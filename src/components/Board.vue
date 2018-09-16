@@ -364,7 +364,7 @@ $button-color: #007bff;
     grid-template-columns: var(--grid-columns);
     grid-template-rows: var(--grid-columns);
     grid-template-areas:
-      "a b c a4"
+      "a1 a2 a3 a4"
       "a5 a6 a7 a8"
       "a9 a10 a11 a12"
       "a13 a14 a15 a16";
@@ -469,15 +469,15 @@ $button-color: #007bff;
     }
 
     .tile-1-1 {
-      grid-area: a;
+      grid-area: a1;
     }
 
     .tile-1-2 {
-      grid-area: b;
+      grid-area: a2;
     }
 
     .tile-1-3 {
-      grid-area: c;
+      grid-area: a3;
     }
 
     .tile-1-4 {
