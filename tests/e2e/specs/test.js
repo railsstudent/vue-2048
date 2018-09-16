@@ -52,11 +52,12 @@ describe("2048 game", () => {
   it("Can move up, down, left and right keys", () => {
     cy.visit("/");
     cy.get("button.btn").click();
+    const delay = 250;
     cy.get("body")
-      .type("{leftarrow}")
-      .type("{downarrow}")
-      .type("{rightarrow}")
-      .type("{uparrow}");
+      .type("{leftarrow}", { delay })
+      .type("{downarrow}", { delay })
+      .type("{rightarrow}", { delay })
+      .type("{uparrow}", { delay });
     cy.get("div.stats > div.score")
       .first()
       .then(firstScore => {
