@@ -86,10 +86,7 @@ export default {
     };
   },
   methods: {
-    assignTile: function(
-      tiles,
-      { row, col, value, merged = false, newlyAdded = false }
-    ) {
+    assignTile: function(tiles, { row, col, value, merged = false, newlyAdded = false }) {
       if (
         tiles &&
         typeof row !== "undefined" &&
@@ -211,12 +208,7 @@ export default {
       return this.move(tiles, SIZE * SIZE - 1, 0, 1, { checkMove });
     },
     canMergeWith: function(curr, next) {
-      return (
-        next.merged === false &&
-        curr != null &&
-        curr.merged === false &&
-        next.value === curr.value
-      );
+      return next.merged === false && curr != null && curr.merged === false && next.value === curr.value;
     },
     mergeWith: function(tiles, nextR, nextC, r, c) {
       if (this.canMergeWith(tiles[r][c], tiles[nextR][nextC]) === true) {
@@ -271,18 +263,11 @@ export default {
         this.score = 0;
         this.highest = 0;
         this.numMoves = 0;
-        this.clone([
-          [-1, -1, -1, -1],
-          [-1, -1, -1, -1],
-          [-1, -1, -1, -1],
-          [-1, -1, -1, -1]
-        ]);
+        this.clone([[-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1]]);
         this.gameState = STATE.running;
-        const { row: row1, col: col1, value: value1 } =
-          this.addRandomTile() || {};
+        const { row: row1, col: col1, value: value1 } = this.addRandomTile() || {};
         this.assignTile(this.tiles, { row: row1, col: col1, value: value1 });
-        const { row: row2, col: col2, value: value2 } =
-          this.addRandomTile() || {};
+        const { row: row2, col: col2, value: value2 } = this.addRandomTile() || {};
         this.assignTile(this.tiles, { row: row2, col: col2, value: value2 });
       }
     },
@@ -371,11 +356,9 @@ $button-color: #007bff;
 
   .tiles {
     position: relative;
-
     margin-top: 10px;
     padding: 10px;
     background: $background-color;
-
     display: grid;
     grid-gap: 15px;
     grid-template-columns: var(--grid-columns);
@@ -466,26 +449,22 @@ $button-color: #007bff;
 
       &256 {
         background: $background-256;
-        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.31746),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.19048);
+        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.31746), inset 0 0 0 1px rgba(255, 255, 255, 0.19048);
       }
 
       &512 {
         background: $background-512;
-        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.39683),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.2381);
+        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.39683), inset 0 0 0 1px rgba(255, 255, 255, 0.2381);
       }
 
       &1024 {
         background: $background-1024;
-        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.47619),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.28571);
+        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.47619), inset 0 0 0 1px rgba(255, 255, 255, 0.28571);
       }
 
       &2048 {
         background: $background-2048;
-        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
+        box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556), inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
       }
     }
 
@@ -609,6 +588,7 @@ $button-color: #007bff;
 
   .overlay {
     display: none;
+
     &.show {
       display: block;
       position: absolute;
@@ -639,9 +619,11 @@ $button-color: #007bff;
     0% {
       transform: scale(0);
     }
+
     50% {
       transform: scale(0.5);
     }
+
     100% {
       transform: scale(1);
     }
@@ -651,9 +633,11 @@ $button-color: #007bff;
     0% {
       transform: scale(0);
     }
+
     50% {
       transform: scale(1.2);
     }
+
     100% {
       transform: scale(1);
     }

@@ -24,9 +24,7 @@ describe("2048 game", () => {
     emptyTiles.should("have.length", 14);
 
     cy.get(".tiles > div span").then($spans => {
-      const twoCells = $spans.filter(
-        (_, e) => parseInt(Cypress.$(e).text()) === 2
-      );
+      const twoCells = $spans.filter((_, e) => parseInt(Cypress.$(e).text()) === 2);
       if (twoCells.length === 2) {
         cy.get("div.background-2").should("have.length", 2);
       } else {
@@ -43,10 +41,7 @@ describe("2048 game", () => {
 
   it("Show game won overlay", () => {
     cy.visit("/?outcome=OVER");
-    cy.contains(
-      "div.tiles > div.overlay > div.text > span",
-      "Game Over! Please try again!"
-    );
+    cy.contains("div.tiles > div.overlay > div.text > span", "Game Over! Please try again!");
   });
 
   it("Can move up, down, left and right keys", () => {
