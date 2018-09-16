@@ -38,11 +38,13 @@ describe("Board.vue", () => {
 
       expect(board.vm.tiles[0][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
     });
   });
@@ -51,6 +53,7 @@ describe("Board.vue", () => {
     let addRandomMockTile;
     let board;
     beforeEach(() => {
+      jest.useFakeTimers();
       addRandomMockTile = jest.fn();
       board = shallowMount(Board, {});
     });
@@ -77,20 +80,28 @@ describe("Board.vue", () => {
       board.vm.startGame();
       board.vm.moveLeft();
 
+      // Fast-forward until all timers have been executed
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
 
       expect(board.vm.tiles[1][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
 
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[1][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.numMoves).toEqual(2);
       expect(board.vm.highest).toEqual(0);
@@ -132,51 +143,67 @@ describe("Board.vue", () => {
       board.vm.addRandomTile = addRandomMockTile;
       board.vm.startGame();
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.score).toEqual(0);
 
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.score).toEqual(2);
 
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.numMoves).toEqual(3);
       expect(board.vm.highest).toEqual(8);
@@ -218,40 +245,52 @@ describe("Board.vue", () => {
       board.vm.tiles[0][2].value = 4;
       board.vm.tiles[0][2].merged = false;
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.score).toEqual(2);
 
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.numMoves).toEqual(2);
       expect(board.vm.highest).toEqual(8);
@@ -300,96 +339,120 @@ describe("Board.vue", () => {
       board.vm.tiles[1][1].merged = false;
 
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 2; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.score).toEqual(8);
 
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 2; i < SIZE; i++) {
         for (let j = 0; j < SIZE - 1; j++) {
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.tiles[3][3]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.numMoves).toEqual(2);
       expect(board.vm.highest).toEqual(8);
@@ -434,33 +497,42 @@ describe("Board.vue", () => {
       board.vm.tiles[1][0].merged = false;
       board.vm.tiles[1][1].value = 4;
       board.vm.tiles[1][1].merged = false;
+
       board.vm.moveLeft();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: TARGET,
-        merged: true
+        merged: true,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 8,
-        merged: true
+        merged: true,
+        newlyAdded: false
       });
       for (let i = 2; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
           if (i === 2 && j === 0) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -475,6 +547,7 @@ describe("Board.vue", () => {
     let addRandomMockTile;
     let board;
     beforeEach(() => {
+      jest.useFakeTimers();
       addRandomMockTile = jest.fn();
       board = shallowMount(Board, {});
     });
@@ -508,51 +581,64 @@ describe("Board.vue", () => {
       board.vm.addRandomTile = addRandomMockTile;
       board.vm.startGame();
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.score).toEqual(0);
 
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
 
       for (let i = 0; i < SIZE - 1; i++) {
         for (let j = 0; j < SIZE - 1; j++) {
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.tiles[2][3]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       for (let j = 0; j < 3; j++) {
         if (j === 2) continue;
         expect(board.vm.tiles[3][j]).toEqual({
           value: -1,
-          merged: false
+          merged: false,
+          newlyAdded: false
         });
       }
       expect(board.vm.numMoves).toEqual(2);
@@ -595,25 +681,32 @@ describe("Board.vue", () => {
       board.vm.tiles[0][2].value = 4;
       board.vm.tiles[0][2].merged = false;
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][0]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
 
       for (let i = 1; i < SIZE; i++) {
@@ -621,36 +714,45 @@ describe("Board.vue", () => {
           if (i === 1 && j === 0) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.score).toEqual(2);
 
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][3]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][0]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
 
       for (let i = 1; i < SIZE; i++) {
@@ -659,7 +761,8 @@ describe("Board.vue", () => {
           if (i === 2 && j === 0) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -708,22 +811,29 @@ describe("Board.vue", () => {
       board.vm.tiles[1][0].merged = false;
       board.vm.tiles[1][1].value = 4;
       board.vm.tiles[1][1].merged = false;
+
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -731,28 +841,35 @@ describe("Board.vue", () => {
           if (i === 1 && (j === 2 || j === 3)) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.score).toEqual(8);
 
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][3]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -761,7 +878,8 @@ describe("Board.vue", () => {
           if (i === 2 && j === 3) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -808,33 +926,42 @@ describe("Board.vue", () => {
       board.vm.tiles[1][0].merged = false;
       board.vm.tiles[1][1].value = 4;
       board.vm.tiles[1][1].merged = false;
+
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: TARGET,
-        merged: true
+        merged: true,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 8,
-        merged: true
+        merged: true,
+        newlyAdded: false
       });
       for (let i = 2; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
           if (i === 2 && j === 3) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -849,6 +976,7 @@ describe("Board.vue", () => {
     let addRandomMockTile;
     let board;
     beforeEach(() => {
+      jest.useFakeTimers();
       addRandomMockTile = jest.fn();
       board = shallowMount(Board, {});
     });
@@ -881,37 +1009,49 @@ describe("Board.vue", () => {
 
       board.vm.addRandomTile = addRandomMockTile;
       board.vm.startGame();
+
       board.vm.moveUp();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.score).toEqual(0);
 
       board.vm.moveUp();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 0; i < SIZE - 1; i++) {
         for (let j = 0; j < SIZE - 1; j++) {
@@ -919,7 +1059,8 @@ describe("Board.vue", () => {
           if (i == 1 && j === 1) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -962,42 +1103,54 @@ describe("Board.vue", () => {
       board.vm.startGame();
       board.vm.tiles[3][2].value = 2;
       board.vm.tiles[3][2].merged = false;
+
       board.vm.moveUp();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 1; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
           if (i !== 2 && j === 2) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.score).toEqual(2);
 
       board.vm.moveUp();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 1; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1005,7 +1158,8 @@ describe("Board.vue", () => {
           if (i === 3 && j === 3) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1054,23 +1208,29 @@ describe("Board.vue", () => {
       board.vm.tiles[1][3].merged = false;
       board.vm.tiles[3][3].value = 4;
       board.vm.tiles[3][3].merged = false;
+
       board.vm.moveUp();
+      jest.runAllTimers();
 
       expect(board.vm.tiles[0][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1078,7 +1238,8 @@ describe("Board.vue", () => {
           if ((i === 1 || i === 3) && j === 1) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1086,21 +1247,27 @@ describe("Board.vue", () => {
 
       // [ [2, 8, -1, 8], [-1, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1] ]
       board.vm.moveUp();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][1]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1108,7 +1275,8 @@ describe("Board.vue", () => {
           if (i === 1 && j === 1) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1143,22 +1311,29 @@ describe("Board.vue", () => {
       board.vm.tiles[3][1].merged = false;
       board.vm.tiles[2][3].value = 2;
       board.vm.tiles[2][3].merged = false;
+
       board.vm.moveUp();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: TARGET,
-        merged: true
+        merged: true,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1166,7 +1341,8 @@ describe("Board.vue", () => {
           if (i === 1 && j === 0) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1181,6 +1357,7 @@ describe("Board.vue", () => {
     let addRandomMockTile;
     let board;
     beforeEach(() => {
+      jest.useFakeTimers();
       addRandomMockTile = jest.fn();
       board = shallowMount(Board, {});
     });
@@ -1213,22 +1390,29 @@ describe("Board.vue", () => {
 
       board.vm.addRandomTile = addRandomMockTile;
       board.vm.startGame();
+
       board.vm.moveDown();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[3][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: -1,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       for (let i = 0; i < SIZE - 1; i++) {
         for (let j = 0; j < SIZE - 1; j++) {
@@ -1237,24 +1421,30 @@ describe("Board.vue", () => {
           if (i == 1 && j == 2) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.score).toEqual(0);
 
       board.vm.moveDown();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[3][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
 
       for (let i = 0; i < SIZE - 1; i++) {
@@ -1263,7 +1453,8 @@ describe("Board.vue", () => {
           if (i == 0 && j == 1) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1310,23 +1501,29 @@ describe("Board.vue", () => {
       board.vm.tiles[1][3].merged = false;
       board.vm.tiles[3][3].value = 2;
       board.vm.tiles[3][3].merged = false;
+
       board.vm.moveDown();
+      jest.runAllTimers();
 
       expect(board.vm.tiles[2][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1335,7 +1532,8 @@ describe("Board.vue", () => {
           if (i === 3 && (j === 1 || j === 3)) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1344,21 +1542,27 @@ describe("Board.vue", () => {
       // move down
       // [ [-1, -1, -1, -1], [-1, -1, -1, 2], [-1, -1, -1, 2], [-1,  8, -1, 4] ]
       board.vm.moveDown();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[1][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.tiles[2][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][1]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1367,7 +1571,8 @@ describe("Board.vue", () => {
           if (i === 3 && (j === 1 || j === 3)) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1420,25 +1625,32 @@ describe("Board.vue", () => {
       board.vm.tiles[2][2].merged = false;
 
       board.vm.moveDown();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[2][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1447,33 +1659,41 @@ describe("Board.vue", () => {
           if (i === 3 && (j === 1 || j === 2)) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
       expect(board.vm.score).toEqual(6);
 
       board.vm.moveDown();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[2][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.tiles[2][2]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
 
       expect(board.vm.tiles[3][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][1]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][2]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1481,7 +1701,8 @@ describe("Board.vue", () => {
           if (i === 3 && j < SIZE - 1) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1516,22 +1737,29 @@ describe("Board.vue", () => {
       board.vm.tiles[1][1].merged = false;
       board.vm.tiles[0][3].value = 2;
       board.vm.tiles[0][3].merged = false;
+
       board.vm.moveDown();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[2][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][1]).toEqual({
         value: TARGET,
-        merged: true
+        merged: true,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
@@ -1539,7 +1767,8 @@ describe("Board.vue", () => {
           if (i === 3 && (j === 0 || j === 1 || j === 3)) continue;
           expect(board.vm.tiles[i][j]).toEqual({
             value: -1,
-            merged: false
+            merged: false,
+            newlyAdded: false
           });
         }
       }
@@ -1554,6 +1783,7 @@ describe("Board.vue", () => {
     let addRandomMockTile;
     let board;
     beforeEach(() => {
+      jest.useFakeTimers();
       addRandomMockTile = jest.fn();
       board = shallowMount(Board, {});
     });
@@ -1590,70 +1820,89 @@ describe("Board.vue", () => {
       board.vm.addRandomTile = addRandomMockTile;
       board.vm.startGame();
       board.vm.clone(tiles);
+
       board.vm.moveRight();
+      jest.runAllTimers();
+
       expect(board.vm.tiles[0][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: true
       });
       expect(board.vm.tiles[0][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][2]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[0][3]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][0]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][1]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][2]).toEqual({
         value: 128,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[1][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][0]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][1]).toEqual({
         value: 32,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][2]).toEqual({
         value: 64,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[2][3]).toEqual({
         value: 32,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][0]).toEqual({
         value: 2,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][1]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][2]).toEqual({
         value: 8,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.tiles[3][3]).toEqual({
         value: 4,
-        merged: false
+        merged: false,
+        newlyAdded: false
       });
       expect(board.vm.numMoves).toEqual(1);
       expect(board.vm.highest).toEqual(4);
@@ -1704,6 +1953,7 @@ describe("Board.vue", () => {
   describe("setGameState", () => {
     let board;
     beforeEach(() => {
+      jest.useFakeTimers();
       board = shallowMount(Board);
     });
     it("set state to won", () => {
@@ -1748,6 +1998,7 @@ describe("Board.vue", () => {
     let spyAddEventListener;
     let spyRemoveEventListener;
     beforeAll(() => {
+      jest.useFakeTimers();
       spyAddEventListener = jest.spyOn(document, "addEventListener");
       spyRemoveEventListener = jest.spyOn(document, "removeEventListener");
       board = shallowMount(Board, {});
@@ -1771,6 +2022,7 @@ describe("Board.vue", () => {
     let spyMoveRight;
 
     beforeEach(() => {
+      jest.useFakeTimers();
       board = shallowMount(Board);
       const { vm } = board;
       spyMoveUp = jest.spyOn(vm, "moveUp");

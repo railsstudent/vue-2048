@@ -13,8 +13,11 @@
         </div>
         <div class="tiles">
             <template v-for="row in 4">
-                <div v-for="col in 4" v-bind:key="'[' + row + ',' + col + ']'" :class="['tile-' + row + '-' + col, 'background-' + tiles[row-1][col-1].value]">
-                    <span v-if="tiles[row-1][col-1].value !== -1">
+                <div v-for="col in 4" v-bind:key="'[' + row + ',' + col + ']'"
+                  :class="['tile-' + row + '-' + col, 'background-' + tiles[row-1][col-1].value,
+                    tiles[row-1][col-1].newlyAdded ? 'tile-new' : '']">
+                      <span v-if="tiles[row-1][col-1].value !== -1" v-bind:key="'[ span' + row + ',' + col + ']'"
+                        :class="[tiles[row-1][col-1].merged ? 'tile-merged' : '']">
                         {{tiles[row-1][col-1].value}}
                     </span>
                 </div>
@@ -67,7 +70,8 @@ export default {
       for (let j = 0; j < SIZE; j++) {
         tiles[i].push({
           value: -1,
-          merged: false
+          merged: false,
+          newlyAdded: false
         });
       }
     }
@@ -82,7 +86,10 @@ export default {
     };
   },
   methods: {
-    assignTile: function(tiles, row, col, value, merged = false) {
+    assignTile: function(
+      tiles,
+      { row, col, value, merged = false, newlyAdded = false }
+    ) {
       if (
         tiles &&
         typeof row !== "undefined" &&
@@ -95,7 +102,8 @@ export default {
         const newRow = tiles[row].slice(0);
         newRow[col] = {
           value,
-          merged
+          merged,
+          newlyAdded
         };
         this.$set(tiles, row, newRow);
       }
@@ -126,8 +134,12 @@ export default {
             if (this.checkingAvailableMoves === true) {
               return true;
             }
-            this.assignTile(tiles, nextR, nextC, curr.value);
-            this.assignTile(tiles, r, c, -1);
+            this.assignTile(tiles, {
+              row: nextR,
+              col: nextC,
+              value: curr.value
+            });
+            this.assignTile(tiles, { row: r, col: c, value: -1 });
             r = nextR;
             c = nextC;
             nextR += yIncr;
@@ -157,20 +169,21 @@ export default {
         return moved;
       }
 
-      // console.log('moved', moved);
-      if (moved === true) {
-        this.numMoves += 1;
-        if (this.highest < TARGET) {
-          const { row, col, value } = this.addRandomTile() || {};
-          this.clearMerged();
-          this.assignTile(tiles, row, col, value);
-          if (!this.movesAvailable()) {
-            this.gameState = STATE.over;
+      setTimeout(() => {
+        if (moved === true) {
+          this.numMoves += 1;
+          if (this.highest < TARGET) {
+            const { row, col, value } = this.addRandomTile() || {};
+            this.clearMerged();
+            this.assignTile(tiles, { row, col, value, newlyAdded: true });
+            if (!this.movesAvailable()) {
+              this.gameState = STATE.over;
+            }
+          } else if (this.highest === TARGET) {
+            this.gameState = STATE.won;
           }
-        } else if (this.highest === TARGET) {
-          this.gameState = STATE.won;
         }
-      }
+      }, 250);
       return moved;
     },
     moveUp: function(tiles, { checkMove = false } = {}) {
@@ -207,8 +220,13 @@ export default {
     },
     mergeWith: function(tiles, nextR, nextC, r, c) {
       if (this.canMergeWith(tiles[r][c], tiles[nextR][nextC]) === true) {
-        this.assignTile(tiles, nextR, nextC, tiles[r][c].value * 2, true);
-        this.assignTile(tiles, r, c, -1);
+        this.assignTile(tiles, {
+          row: nextR,
+          col: nextC,
+          value: tiles[r][c].value * 2,
+          merged: true
+        });
+        this.assignTile(tiles, { row: r, col: c, value: -1 });
         return tiles[nextR][nextC].value;
       }
       return -1;
@@ -217,7 +235,7 @@ export default {
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
           const { value } = this.tiles[i][j];
-          this.assignTile(this.tiles, i, j, value);
+          this.assignTile(this.tiles, { row: i, col: j, value });
         }
       }
     },
@@ -262,16 +280,21 @@ export default {
         this.gameState = STATE.running;
         const { row: row1, col: col1, value: value1 } =
           this.addRandomTile() || {};
-        this.assignTile(this.tiles, row1, col1, value1);
+        this.assignTile(this.tiles, { row: row1, col: col1, value: value1 });
         const { row: row2, col: col2, value: value2 } =
           this.addRandomTile() || {};
-        this.assignTile(this.tiles, row2, col2, value2);
+        this.assignTile(this.tiles, { row: row2, col: col2, value: value2 });
       }
     },
     clone: function(otherTiles) {
       for (let i = 0; i < SIZE; i++) {
         for (let j = 0; j < SIZE; j++) {
-          this.assignTile(this.tiles, i, j, otherTiles[i][j], false);
+          this.assignTile(this.tiles, {
+            row: i,
+            col: j,
+            value: otherTiles[i][j],
+            merged: false
+          });
         }
       }
     },
@@ -336,17 +359,18 @@ $color-2: #776e65;
 $color-8: #f9f6f2;
 $button-color: #007bff;
 
+:root {
+  --grid-columns: repeat(4, 105px);
+  --font-size: 3.2em;
+}
+
 .container {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: flex-start;
 
   .tiles {
     position: relative;
-
-    width: 500px;
-    height: 500px;
 
     margin-top: 10px;
     padding: 10px;
@@ -354,8 +378,8 @@ $button-color: #007bff;
 
     display: grid;
     grid-gap: 15px;
-    grid-template-columns: repeat(4, minmax(80px, 120px));
-    grid-template-rows: repeat(4, minmax(80px, 120px));
+    grid-template-columns: var(--grid-columns);
+    grid-template-rows: var(--grid-columns);
     grid-template-areas:
       "a b c a4"
       "a5 a6 a7 a8"
@@ -386,7 +410,7 @@ $button-color: #007bff;
       align-items: center;
 
       span {
-        font-size: 3.2em;
+        font-size: var(--font-size);
         font-weight: 600;
       }
     }
@@ -492,6 +516,7 @@ $button-color: #007bff;
     .tile-2-3 {
       grid-area: a7;
     }
+
     .tile-2-4 {
       grid-area: a8;
     }
@@ -499,12 +524,15 @@ $button-color: #007bff;
     .tile-3-1 {
       grid-area: a9;
     }
+
     .tile-3-2 {
       grid-area: a10;
     }
+
     .tile-3-3 {
       grid-area: a11;
     }
+
     .tile-3-4 {
       grid-area: a12;
     }
@@ -524,13 +552,21 @@ $button-color: #007bff;
     .tile-4-4 {
       grid-area: a16;
     }
+
+    .tile-merged {
+      animation: merged 0.3s ease 100ms;
+      animation-fill-mode: backwards;
+    }
+
+    .tile-new {
+      animation: bounce-in 0.2s;
+    }
   }
 
   .full {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 50%;
 
     .actions {
       display: flex;
@@ -542,7 +578,7 @@ $button-color: #007bff;
         justify-content: space-between;
 
         .score {
-          padding: 10px 10px;
+          padding: 10px;
           font-size: 1.2em;
           font-weight: bold;
         }
@@ -588,7 +624,7 @@ $button-color: #007bff;
       display: table;
       color: #fff;
       font-size: 1.5em;
-      height: 500px;
+      height: 100%;
       width: 100%;
       text-align: center;
 
@@ -597,6 +633,37 @@ $button-color: #007bff;
         vertical-align: middle;
       }
     }
+  }
+
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(0.5);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes merged {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+@media screen and (min-width: 355px) and (max-width: 499px) {
+  :root {
+    --grid-columns: repeat(4, 70px);
+    --font-size: 2.2em;
   }
 }
 </style>
