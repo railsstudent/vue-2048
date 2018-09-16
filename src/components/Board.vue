@@ -31,6 +31,18 @@
 </template>
 
 <script>
+function getParameterByName(name, url) {
+  if (!url) {
+    url = window.location.href;
+  }
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 export const STATE = {
   start: "START",
   won: "WON",
@@ -39,7 +51,7 @@ export const STATE = {
 };
 export const SIZE = 4;
 export const TARGET = 2048;
-const KEYCODE = {
+export const KEYCODE = {
   up: 38,
   down: 40,
   left: 37,
@@ -262,31 +274,43 @@ export default {
           this.assignTile(this.tiles, i, j, otherTiles[i][j], false);
         }
       }
-    }
-  },
-  created: function() {
-    const self = this;
-    document.addEventListener("keyup", function(e) {
-      if (self.gameState === STATE.running) {
+    },
+    setGameState(state) {
+      if (state === STATE.won || state === STATE.over) {
+        this.gameState = state;
+      }
+    },
+    handleKeyUp(e) {
+      if (this.gameState === STATE.running) {
         const code = e.which || e.keyCode;
         switch (code) {
           case KEYCODE.up:
-            self.moveUp();
+            this.moveUp();
             break;
           case KEYCODE.down:
-            self.moveDown();
+            this.moveDown();
             break;
           case KEYCODE.left:
-            self.moveLeft();
+            this.moveLeft();
             break;
           case KEYCODE.right:
-            self.moveRight();
+            this.moveRight();
             break;
           default:
             break;
         }
       }
-    });
+    }
+  },
+  created: function() {
+    const outcome = getParameterByName("outcome");
+    if (outcome === STATE.won || outcome === STATE.over) {
+      this.setGameState(outcome);
+    }
+    document.addEventListener("keyup", this.handleKeyUp);
+  },
+  destroyed: function() {
+    document.removeEventListener("keyup", this.handleKeyUp);
   }
 };
 </script>

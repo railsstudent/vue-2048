@@ -9,7 +9,7 @@
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "test:unit:watch": "jest --clearCache && vue-cli-service test:unit --watch",
     "test:e2e": "jest --clearCache && vue-cli-service test:e2e",
-    "static:coverage": "http-server coverage/lcov-report -p 8888",
+    "serve:coverage": "http-server coverage/lcov-report -p 8888",
     "deploy": "NODE_ENV=production ./deploy.sh"
   },
   "dependencies": {
@@ -27,10 +27,24 @@
     "eslint-config-prettier": "3.0.1",
     "eslint-plugin-prettier": "2.6.2",
     "http-server": "0.11.1",
+    "husky": "1.0.0-rc.13",
+    "lint-staged": "7.2.2",
     "node-sass": "4.9.0",
     "prettier": "1.14.2",
     "sass-loader": "7.0.1",
     "vue-template-compiler": "2.5.17"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:unit"
+    }
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "npm run lint",
+      "git add"
+    ]
   },
   "eslintConfig": {
     "root": true,

@@ -1,6 +1,6 @@
 import { shallowMount } from "@vue/test-utils";
 import Board from "@/components/Board.vue";
-import { STATE, SIZE, TARGET } from "@/components/Board.vue";
+import { STATE, SIZE, TARGET, KEYCODE } from "@/components/Board.vue";
 
 describe("Board.vue", () => {
   describe("startGame", () => {
@@ -1698,6 +1698,140 @@ describe("Board.vue", () => {
       expect([1, 2, 3]).toContainEqual(row);
       expect([0, 2, 3]).toContainEqual(col);
       expect([2, 4]).toContainEqual(value);
+    });
+  });
+
+  describe("setGameState", () => {
+    let board;
+    beforeEach(() => {
+      board = shallowMount(Board);
+    });
+    it("set state to won", () => {
+      board.vm.setGameState(STATE.won);
+      expect(board.vm.gameState).toEqual(STATE.won);
+    });
+
+    it("set state to over", () => {
+      board.vm.setGameState(STATE.over);
+      expect(board.vm.gameState).toEqual(STATE.over);
+    });
+
+    it("does not set state if neither won nor over", () => {
+      board.vm.setGameState(STATE.running);
+      expect(board.vm.gameState).toEqual(STATE.start);
+    });
+
+    it("mock the outcome of the game is won", () => {
+      window.history.pushState({}, "Test Title", "/?outcome=WON");
+      board = shallowMount(Board);
+      // https://www.ryandoll.com/post/2018/3/29/jest-and-url-mocking
+      expect(board.vm.gameState).toEqual(STATE.won);
+    });
+
+    it("mock the outcome of the game is loss", () => {
+      window.history.pushState({}, "Test Title", "/?outcome=OVER");
+      board = shallowMount(Board);
+      // https://www.ryandoll.com/post/2018/3/29/jest-and-url-mocking
+      expect(board.vm.gameState).toEqual(STATE.over);
+    });
+
+    it("mock the outcome of the game is neither winning or losing", () => {
+      window.history.pushState({}, "Test Title", "/?outcome=xxxx");
+      board = shallowMount(Board);
+      // https://www.ryandoll.com/post/2018/3/29/jest-and-url-mocking
+      expect(board.vm.gameState).toEqual(STATE.start);
+    });
+  });
+
+  describe("addEventListener and removeEventListener", () => {
+    let board;
+    let spyAddEventListener;
+    let spyRemoveEventListener;
+    beforeAll(() => {
+      spyAddEventListener = jest.spyOn(document, "addEventListener");
+      spyRemoveEventListener = jest.spyOn(document, "removeEventListener");
+      board = shallowMount(Board, {});
+    });
+
+    it("addEventListener is called", () => {
+      expect(spyAddEventListener).toHaveBeenCalledTimes(1);
+    });
+
+    it("removeEventListener is called", () => {
+      board.vm.$destroy();
+      expect(spyRemoveEventListener).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("handleKeyup", () => {
+    let board;
+    let spyMoveUp;
+    let spyMoveDown;
+    let spyMoveLeft;
+    let spyMoveRight;
+
+    beforeEach(() => {
+      board = shallowMount(Board);
+      const { vm } = board;
+      spyMoveUp = jest.spyOn(vm, "moveUp");
+      spyMoveDown = jest.spyOn(vm, "moveDown");
+      spyMoveLeft = jest.spyOn(vm, "moveLeft");
+      spyMoveRight = jest.spyOn(vm, "moveRight");
+    });
+
+    it("moveUp is called", () => {
+      board.vm.gameState = STATE.running;
+      board.vm.handleKeyUp({
+        keyCode: KEYCODE.up
+      });
+      expect(spyMoveUp).toHaveBeenCalledTimes(1);
+      expect(spyMoveDown).toHaveBeenCalledTimes(0);
+      expect(spyMoveLeft).toHaveBeenCalledTimes(0);
+      expect(spyMoveRight).toHaveBeenCalledTimes(0);
+    });
+
+    it("moveDown is called", () => {
+      board.vm.gameState = STATE.running;
+      board.vm.handleKeyUp({
+        keyCode: KEYCODE.down
+      });
+      expect(spyMoveUp).toHaveBeenCalledTimes(0);
+      expect(spyMoveDown).toHaveBeenCalledTimes(1);
+      expect(spyMoveLeft).toHaveBeenCalledTimes(0);
+      expect(spyMoveRight).toHaveBeenCalledTimes(0);
+    });
+
+    it("moveLeft is called", () => {
+      board.vm.gameState = STATE.running;
+      board.vm.handleKeyUp({
+        keyCode: KEYCODE.left
+      });
+      expect(spyMoveUp).toHaveBeenCalledTimes(0);
+      expect(spyMoveDown).toHaveBeenCalledTimes(0);
+      expect(spyMoveLeft).toHaveBeenCalledTimes(1);
+      expect(spyMoveRight).toHaveBeenCalledTimes(0);
+    });
+
+    it("moveRight is called", () => {
+      board.vm.gameState = STATE.running;
+      board.vm.handleKeyUp({
+        keyCode: KEYCODE.right
+      });
+      expect(spyMoveUp).toHaveBeenCalledTimes(0);
+      expect(spyMoveDown).toHaveBeenCalledTimes(0);
+      expect(spyMoveLeft).toHaveBeenCalledTimes(0);
+      expect(spyMoveRight).toHaveBeenCalledTimes(1);
+    });
+
+    it("other key is ignored", () => {
+      board.vm.gameState = STATE.running;
+      board.vm.handleKeyUp({
+        keyCode: 0
+      });
+      expect(spyMoveUp).toHaveBeenCalledTimes(0);
+      expect(spyMoveDown).toHaveBeenCalledTimes(0);
+      expect(spyMoveLeft).toHaveBeenCalledTimes(0);
+      expect(spyMoveRight).toHaveBeenCalledTimes(0);
     });
   });
 });
