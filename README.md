@@ -93,6 +93,24 @@ The build artifacts will be bundled in the `dist/` directory.
 ```
 Navigate to http://localhost:8888
 
+### linting
+```javascript
+    # with npm
+    npm run lint
+
+    # or with yarn
+    yarn lint
+```
+
+### SCSS linting
+```javascript
+    # with npm
+    npm run lint:scss
+
+    # or with yarn
+    yarn lint:scss
+```
+
 ### Deployment to Github page
  ```javascript
     # with npm
