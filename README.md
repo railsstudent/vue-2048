@@ -122,5 +122,5 @@ Navigate to http://localhost:8888
 The command executes deploy.sh to push codes from dist/ to gh-pages branch
 
 # Area of Improvements
-1. This project is currently without e2e testing. Test cases will be implemented after grasping the concepts of Cypress.io
+1. ~~This project is currently without e2e testing. Test cases will be implemented after grasping the concepts of Cypress.io~~
 2. Store highest score in local storage of browser
