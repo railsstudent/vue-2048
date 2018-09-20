@@ -81,8 +81,7 @@ export default {
       gameState: STATE.start,
       highest: -1,
       score: 0,
-      numMoves: 0,
-      highestTile: 0
+      numMoves: 0
     };
   },
   methods: {
