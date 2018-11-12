@@ -1014,6 +1014,18 @@ describe("Board.vue", () => {
             board.vm.moveRight();
             jest.runAllTimers();
 
+            expect(board.find(".tile-1-3 > span").text()).toBe("4");
+            expect(board.find(".tile-1-4 > span").text()).toBe("4");
+            expect(board.find(".tile-2-4 > span").text()).toBe("8");
+            expect(board.find(".tile-2-3 > span").text()).toBe("2");
+
+            expect(board.findAll(".tile-new").exists()).toBe(true);
+            expect(board.findAll(".tile-merged").exists()).toBe(false);
+
+            expect(board.find("div.stats > .score:first-child").text()).toBe("Num Moves: 1");
+            expect(board.find("div.stats > .score:nth-of-type(2)").text()).toBe("Current highest tile: 8");
+            expect(board.find("div.stats > .score:last-child").text()).toBe("Score: 8");
+
             expect(board.vm.tiles[0][2]).toEqual({
                 value: 4,
                 merged: false,
@@ -1049,6 +1061,20 @@ describe("Board.vue", () => {
 
             board.vm.moveRight();
             jest.runAllTimers();
+
+            expect(board.find(".tile-1-4 > span").text()).toBe("8");
+            expect(board.find(".tile-2-4 > span").text()).toBe("8");
+            expect(board.find(".tile-2-3 > span").text()).toBe("2");
+            expect(board.find(".tile-3-4 > span").text()).toBe("2");
+
+            expect(board.find(".tile-1-3 > span").exists()).toBe(false);
+
+            expect(board.findAll(".tile-new").exists()).toBe(true);
+            expect(board.findAll(".tile-merged").exists()).toBe(false);
+
+            expect(board.find("div.stats > .score:first-child").text()).toBe("Num Moves: 2");
+            expect(board.find("div.stats > .score:nth-of-type(2)").text()).toBe("Current highest tile: 8");
+            expect(board.find("div.stats > .score:last-child").text()).toBe("Score: 12");
 
             expect(board.vm.tiles[0][3]).toEqual({
                 value: 8,
