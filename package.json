@@ -1,131 +1,129 @@
 {
-  "name": "vue-2048",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "test:unit": "jest --clearCache && vue-cli-service test:unit",
-    "test:unit:watch": "jest --clearCache && vue-cli-service test:unit --watch",
-    "test:e2e": "jest --clearCache && vue-cli-service test:e2e",
-    "serve:coverage": "http-server coverage/lcov-report -p 8888",
-    "deploy": "NODE_ENV=production ./deploy.sh",
-    "lint:scss": "stylelint *.vue --syntax scss"
-  },
-  "dependencies": {
-    "vue": "2.5.17"
-  },
-  "devDependencies": {
-    "@mapbox/stylelint-processor-arbitrary-tags": "0.2.0",
-    "@vue/cli-plugin-babel": "3.0.1",
-    "@vue/cli-plugin-e2e-cypress": "3.0.1",
-    "@vue/cli-plugin-eslint": "3.0.1",
-    "@vue/cli-plugin-unit-jest": "3.0.1",
-    "@vue/cli-service": "3.0.1",
-    "@vue/test-utils": "1.0.0-beta.20",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "23.0.1",
-    "eslint-config-prettier": "3.0.1",
-    "eslint-plugin-prettier": "2.6.2",
-    "http-server": "0.11.1",
-    "husky": "1.0.0-rc.13",
-    "lint-staged": "7.2.2",
-    "node-sass": "4.9.0",
-    "prettier": "1.14.2",
-    "sass-loader": "7.0.1",
-    "stylelint": "9.5.0",
-    "stylelint-config-standard": "18.2.0",
-    "vue-template-compiler": "2.5.17"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test:unit"
+    "name": "vue-2048",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "lint": "vue-cli-service lint",
+        "test:unit": "jest --clearCache && vue-cli-service test:unit",
+        "test:unit:watch": "jest --clearCache && vue-cli-service test:unit --watch",
+        "test:e2e": "jest --clearCache && vue-cli-service test:e2e",
+        "serve:coverage": "http-server coverage/lcov-report -p 8888",
+        "deploy": "NODE_ENV=production ./deploy.sh",
+        "lint:scss": "stylelint *.vue --syntax scss"
+    },
+    "dependencies": {
+        "vue": "2.5.17"
+    },
+    "devDependencies": {
+        "@mapbox/stylelint-processor-arbitrary-tags": "0.2.0",
+        "@vue/cli-plugin-babel": "3.0.1",
+        "@vue/cli-plugin-e2e-cypress": "3.0.1",
+        "@vue/cli-plugin-eslint": "3.0.1",
+        "@vue/cli-plugin-unit-jest": "3.0.1",
+        "@vue/cli-service": "3.0.1",
+        "@vue/test-utils": "1.0.0-beta.20",
+        "babel-core": "7.0.0-bridge.0",
+        "babel-jest": "23.0.1",
+        "eslint-config-prettier": "3.0.1",
+        "eslint-plugin-prettier": "2.6.2",
+        "http-server": "0.11.1",
+        "husky": "1.0.0-rc.13",
+        "lint-staged": "7.2.2",
+        "node-sass": "4.9.0",
+        "prettier": "1.14.2",
+        "pretty-quick": "1.8.0",
+        "sass-loader": "7.0.1",
+        "stylelint": "9.5.0",
+        "stylelint-config-standard": "18.2.0",
+        "vue-template-compiler": "2.5.17"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged lint-staged",
+            "pre-push": "npm run test:unit"
+        }
+    },
+    "lint-staged": {
+        "*.vue": "npm run lint:scss",
+        "*.{js,vue}": [
+            "npm run lint",
+            "git add"
+        ]
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "browser": true,
+            "node": true
+        },
+        "extends": [
+            "plugin:vue/essential",
+            "plugin:prettier/recommended"
+        ],
+        "rules": {
+            "quotes": [
+                "error",
+                "double"
+            ],
+            "semi": [
+                "error",
+                "always"
+            ]
+        },
+        "parserOptions": {
+            "parser": "babel-eslint"
+        }
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not ie <= 8"
+    ],
+    "jest": {
+        "moduleFileExtensions": [
+            "js",
+            "jsx",
+            "json",
+            "vue"
+        ],
+        "transform": {
+            "^.+\\.vue$": "vue-jest",
+            ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+            "^.+\\.jsx?$": "babel-jest"
+        },
+        "moduleNameMapper": {
+            "^@/(.*)$": "<rootDir>/src/$1"
+        },
+        "snapshotSerializers": [
+            "jest-serializer-vue"
+        ],
+        "testMatch": [
+            "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+        ],
+        "testURL": "http://localhost/",
+        "collectCoverage": true,
+        "collectCoverageFrom": [
+            "src/**/*.vue",
+            "!src/App.vue"
+        ],
+        "coverageDirectory": "coverage/",
+        "coverageReporters": [
+            "lcov"
+        ]
+    },
+    "stylelint": {
+        "processors": [
+            "@mapbox/stylelint-processor-arbitrary-tags"
+        ],
+        "extends": [
+            "stylelint-config-standard"
+        ]
     }
-  },
-  "lint-staged": {
-    "*.vue": "npm run lint:scss",
-    "*.{js,vue}": [
-      "npm run lint",
-      "git add"
-    ]
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "browser": true,
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "plugin:prettier/recommended"
-    ],
-    "rules": {
-      "quotes": [
-        "error",
-        "double"
-      ],
-      "semi": [
-        "error",
-        "always"
-      ]
-    },
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.vue$": "vue-jest",
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ],
-    "testMatch": [
-      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
-    ],
-    "testURL": "http://localhost/",
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.vue",
-      "!src/App.vue"
-    ],
-    "coverageDirectory": "coverage/",
-    "coverageReporters": [
-      "lcov"
-    ]
-  },
-  "stylelint": {
-    "processors": [
-      "@mapbox/stylelint-processor-arbitrary-tags"
-    ],
-    "extends": [
-      "stylelint-config-standard"
-    ]
-  },
-  "prettier": {
-    "printWidth": 120
-  }
 }
