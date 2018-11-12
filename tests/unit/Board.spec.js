@@ -908,6 +908,21 @@ describe("Board.vue", () => {
             board.vm.moveRight();
             jest.runAllTimers();
 
+            expect(board.find(".tile-1-4 > span").text()).toBe("8");
+            expect(board.find(".tile-2-4 > span").text()).toBe("2");
+            expect(board.find(".tile-3-1 > span").text()).toBe("2");
+
+            expect(board.find(".tile-1-1 > span").exists()).toBe(false);
+            expect(board.find(".tile-1-2 > span").exists()).toBe(false);
+            expect(board.find(".tile-1-3 > span").exists()).toBe(false);
+
+            expect(board.findAll(".tile-new").exists()).toBe(true);
+            expect(board.findAll(".tile-merged").exists()).toBe(false);
+
+            expect(board.find("div.stats > .score:first-child").text()).toBe("Num Moves: 2");
+            expect(board.find("div.stats > .score:nth-of-type(2)").text()).toBe("Current highest tile: 8");
+            expect(board.find("div.stats > .score:last-child").text()).toBe("Score: 6");
+
             expect(board.vm.tiles[0][3]).toEqual({
                 value: 8,
                 merged: false,
