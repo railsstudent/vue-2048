@@ -2035,7 +2035,12 @@ describe("Board.vue", () => {
                     value: 2,
                 });
 
-            const tiles = [[2, 2, 8, 2], [4, 8, 128, 4], [8, 32, 64, 32], [2, 4, 8, 4]];
+            const tiles = [
+                [2, 2, 8, 2],
+                [4, 8, 128, 4],
+                [8, 32, 64, 32],
+                [2, 4, 8, 4],
+            ];
 
             board.vm.addRandomTile = addRandomMockTile;
             board.vm.startGame();
