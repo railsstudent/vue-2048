@@ -357,12 +357,10 @@ $color-2: #776e65;
 $color-8: #f9f6f2;
 $button-color: #007bff;
 
-:root {
+.container {
     --grid-columns: repeat(4, 105px);
     --font-size: 3.2em;
-}
 
-.container {
     display: flex;
     flex-direction: row;
     justify-content: center;

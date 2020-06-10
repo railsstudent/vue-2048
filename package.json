@@ -118,18 +118,9 @@
         }
     },
     "lint-staged": {
-        "*.vue": "npm run lint:scss",
         "*.{js,vue}": [
             "npm run lint",
             "git add"
-        ]
-    },
-    "stylelint": {
-        "processors": [
-            "@mapbox/stylelint-processor-arbitrary-tags"
-        ],
-        "extends": [
-            "stylelint-config-standard"
         ]
     }
 }

@@ -2,7 +2,7 @@
     <div id="app">
         <p class="title">Vue 2048 Game</p>
         <Board></Board>
-        <p class="footer">Made by Connie @ 2018</p>
+        <p class="footer">Made by Connie @ {{ year }}</p>
     </div>
 </template>
 
@@ -13,6 +13,11 @@ export default {
     name: "app",
     components: {
         Board,
+    },
+    data() {
+        return {
+            year: new Date().getFullYear(),
+        };
     },
 };
 </script>
