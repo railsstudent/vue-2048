@@ -1,16 +1,13 @@
 <template>
     <div class="container">
         <div class="full">
-            <div class="actions">
-                <div class="stats">
-                    <div class="score">Num Moves: {{ numMoves }}</div>
-                    <div class="score">Current highest tile: {{ highest }}</div>
-                    <div class="score">Score: {{ score }}</div>
-                </div>
-                <div class="buttons">
-                    <button class="btn" v-if="gameState !== 'RUNNING'" v-on:click="startGame">Start Game</button>
-                </div>
-            </div>
+            <Summary
+                :numMoves="numMoves"
+                :highest="highest"
+                :score="score"
+                :gameState="gameState"
+                @startGame="startGame"
+            ></Summary>
             <div class="tiles">
                 <template v-for="row in 4">
                     <div
@@ -70,8 +67,13 @@ export const KEYCODE = {
     right: 39,
 };
 
+import Summary from "./Summary";
+
 export default {
     name: "Board",
+    components: {
+        Summary,
+    },
     data: function() {
         const tiles = [];
         for (let i = 0; i < SIZE; i++) {
@@ -88,7 +90,7 @@ export default {
             tiles,
             checkingAvailableMoves: false,
             gameState: STATE.start,
-            highest: -1,
+            highest: 0,
             score: 0,
             numMoves: 0,
         };
@@ -355,7 +357,6 @@ $background-2048: #edc22e;
 
 $color-2: #776e65;
 $color-8: #f9f6f2;
-$button-color: #007bff;
 
 .container {
     --grid-columns: repeat(4, 105px);
@@ -557,44 +558,6 @@ $button-color: #007bff;
         display: flex;
         flex-direction: column;
         align-items: center;
-
-        .actions {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-
-            .stats {
-                display: flex;
-                justify-content: space-between;
-
-                .score {
-                    padding: 10px;
-                    font-size: 1.2em;
-                    font-weight: bold;
-                }
-            }
-
-            .buttons {
-                display: flex;
-                justify-content: flex-end;
-                margin: 10px 0;
-            }
-
-            .btn {
-                background-color: $button-color;
-                border-color: $button-color;
-                color: #fff;
-                font-size: 1rem;
-                border-radius: 0.25rem;
-                padding: 0.375rem 0.75rem;
-                font-weight: 400;
-                text-align: center;
-                white-space: nowrap;
-                display: inline-block;
-                vertical-align: middle;
-                transition: ease-in-out, background-color 0.15s;
-            }
-        }
     }
 
     .overlay {
@@ -656,7 +619,7 @@ $button-color: #007bff;
 }
 
 @media screen and (min-width: 355px) and (max-width: 499px) {
-    :root {
+    .container {
         --grid-columns: repeat(4, 70px);
         --font-size: 2.2em;
     }
