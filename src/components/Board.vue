@@ -10,25 +10,11 @@
             ></Summary>
             <div class="tiles">
                 <template v-for="row in 4">
-                    <div
-                        v-for="col in 4"
-                        v-bind:key="'[' + row + ',' + col + ']'"
-                        :class="[
-                            'tile-' + row + '-' + col,
-                            'background-' + tiles[row - 1][col - 1].value,
-                            tiles[row - 1][col - 1].newlyAdded ? 'tile-new' : '',
-                        ]"
-                    >
-                        <span
-                            v-if="tiles[row - 1][col - 1].value !== -1"
-                            v-bind:key="'[ span' + row + ',' + col + ']'"
-                            :class="[tiles[row - 1][col - 1].merged ? 'tile-merged' : '']"
-                        >
-                            {{ tiles[row - 1][col - 1].value }}
-                        </span>
-                    </div>
+                    <template v-for="col in 4">
+                        <Tile :key="`tile-${row}-${col}`" :tiles="tiles" :row="row" :col="col"></Tile>
+                    </template>
                 </template>
-                <div class="overlay" v-bind:class="{ show: gameState === 'OVER' || gameState === 'WON' }">
+                <div class="overlay" :class="{ show: gameState === 'OVER' || gameState === 'WON' }">
                     <div class="text">
                         <span v-if="gameState === 'OVER'">Game Over! Please try again!</span>
                         <span v-if="gameState === 'WON'">You Win!</span>
@@ -68,11 +54,13 @@ export const KEYCODE = {
 };
 
 import Summary from "./Summary";
+import Tile from "./Tile";
 
 export default {
     name: "Board",
     components: {
         Summary,
+        Tile,
     },
     data: function() {
         const tiles = [];
