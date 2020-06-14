@@ -63,17 +63,13 @@ export default {
         Tile,
     },
     data: function() {
-        const tiles = [];
-        for (let i = 0; i < SIZE; i++) {
-            tiles.push([]);
-            for (let j = 0; j < SIZE; j++) {
-                tiles[i].push({
-                    value: -1,
-                    merged: false,
-                    newlyAdded: false,
-                });
-            }
-        }
+        const arr = Array(SIZE).fill(-1);
+        const tiles = [...arr].reduce((acc, _) => {
+            const row = [...arr].reduce((acc2, value) => acc2.concat({ value, merged: false, newlyAdded: false }), []);
+            acc.push(row);
+            return acc;
+        }, []);
+
         return {
             tiles,
             checkingAvailableMoves: false,
@@ -84,16 +80,11 @@ export default {
         };
     },
     methods: {
+        validIndex(idx) {
+            return typeof idx !== "undefined" && idx >= 0 && idx < SIZE;
+        },
         assignTile: function(tiles, { row, col, value, merged = false, newlyAdded = false }) {
-            if (
-                tiles &&
-                typeof row !== "undefined" &&
-                typeof col !== "undefined" &&
-                row >= 0 &&
-                row < SIZE &&
-                col >= 0 &&
-                col < SIZE
-            ) {
+            if (tiles && this.validIndex(row) && this.validIndex(col)) {
                 const newRow = tiles[row].slice(0);
                 newRow[col] = {
                     value,
@@ -206,10 +197,10 @@ export default {
             return this.move(tiles, SIZE * SIZE - 1, 0, 1, { checkMove });
         },
         canMergeWith: function(curr, next) {
-            return next.merged === false && curr != null && curr.merged === false && next.value === curr.value;
+            return !next.merged && curr !== null && !curr.merged && next.value === curr.value;
         },
         mergeWith: function(tiles, nextR, nextC, r, c) {
-            if (this.canMergeWith(tiles[r][c], tiles[nextR][nextC]) === true) {
+            if (this.canMergeWith(tiles[r][c], tiles[nextR][nextC])) {
                 this.assignTile(tiles, {
                     row: nextR,
                     col: nextC,
@@ -222,12 +213,13 @@ export default {
             return -1;
         },
         clearMerged: function() {
-            for (let i = 0; i < SIZE; i++) {
-                for (let j = 0; j < SIZE; j++) {
-                    const { value } = this.tiles[i][j];
-                    this.assignTile(this.tiles, { row: i, col: j, value });
-                }
-            }
+            const arr = Array(SIZE).fill(0);
+            [...arr].forEach((_, row) => {
+                [...arr].forEach((_, col) => {
+                    const { value } = this.tiles[row][col];
+                    this.assignTile(this.tiles, { row, col, value });
+                });
+            });
         },
         movesAvailable: function() {
             this.checkingAvailableMoves = true;
@@ -261,12 +253,7 @@ export default {
                 this.score = 0;
                 this.highest = 0;
                 this.numMoves = 0;
-                this.clone([
-                    [-1, -1, -1, -1],
-                    [-1, -1, -1, -1],
-                    [-1, -1, -1, -1],
-                    [-1, -1, -1, -1],
-                ]);
+                this.clone();
                 this.gameState = STATE.running;
                 const { row: row1, col: col1, value: value1 } = this.addRandomTile() || {};
                 this.assignTile(this.tiles, { row: row1, col: col1, value: value1 });
@@ -274,17 +261,13 @@ export default {
                 this.assignTile(this.tiles, { row: row2, col: col2, value: value2 });
             }
         },
-        clone: function(otherTiles) {
-            for (let i = 0; i < SIZE; i++) {
-                for (let j = 0; j < SIZE; j++) {
-                    this.assignTile(this.tiles, {
-                        row: i,
-                        col: j,
-                        value: otherTiles[i][j],
-                        merged: false,
-                    });
-                }
-            }
+        clone: function() {
+            const arr = Array(SIZE).fill(-1);
+            [...arr].forEach((_, row) => {
+                [...arr].forEach((value, col) => {
+                    this.assignTile(this.tiles, { row, col, value });
+                });
+            });
         },
         setGameState(state) {
             if (state === STATE.won || state === STATE.over) {
