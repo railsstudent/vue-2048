@@ -1,12 +1,12 @@
 <template>
     <div class="actions">
         <div class="stats">
-            <div class="score">Num Moves: {{ numMoves }}</div>
-            <div class="score">Current highest tile: {{ highest }}</div>
-            <div class="score">Score: {{ score }}</div>
+            <div class="score">Num Moves: {{ info.numMoves }}</div>
+            <div class="score">Current highest tile: {{ info.highest }}</div>
+            <div class="score">Score: {{ info.score }}</div>
         </div>
         <div class="buttons">
-            <button class="btn" v-if="gameState !== 'RUNNING'" v-on:click="startGame">Start Game</button>
+            <button class="btn" v-if="info.gameState !== 'RUNNING'" :click="startGame">Start Game</button>
         </div>
     </div>
 </template>
@@ -15,10 +15,7 @@
 export default {
     name: "Summary",
     props: {
-        numMoves: Number,
-        highest: Number,
-        score: Number,
-        gameState: String,
+        info: { numMoves: Number, highest: Number, score: Number, gameState: String },
     },
     methods: {
         startGame() {

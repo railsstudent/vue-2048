@@ -1,7 +1,7 @@
 <template>
     <div :class="['tile', tileCssClass, backgroundCsssClass, newTileCssClass]">
-        <span v-if="currentTile && currentTile.value !== -1" :class="[mergeCssClass]">
-            {{ currentTile.value }}
+        <span v-if="tile && tile.value !== -1" :class="[mergeCssClass]">
+            {{ tile.value }}
         </span>
     </div>
 </template>
@@ -12,23 +12,20 @@ export default {
     props: {
         row: Number,
         col: Number,
-        tiles: Array,
+        tile: Object,
     },
     computed: {
-        currentTile() {
-            return this.row >= 1 && this.col >= 1 ? this.tiles[this.row - 1][this.col - 1] : null;
-        },
         tileCssClass() {
             return `tile-${this.row}-${this.col}`;
         },
         backgroundCsssClass() {
-            return this.currentTile && this.currentTile.value ? `background-${this.currentTile.value}` : "";
+            return this.tile && this.tile.value ? `background-${this.tile.value}` : "";
         },
         newTileCssClass() {
-            return this.currentTile && this.currentTile.newlyAdded ? "tile-new" : "";
+            return this.tile && this.tile.newlyAdded ? "tile-new" : "";
         },
         mergeCssClass() {
-            return this.currentTile && this.currentTile.merged ? "tile-merged" : "";
+            return this.tile && this.tile.merged ? "tile-merged" : "";
         },
     },
 };

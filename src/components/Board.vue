@@ -1,17 +1,11 @@
 <template>
     <div class="container">
         <div class="full">
-            <Summary
-                :numMoves="numMoves"
-                :highest="highest"
-                :score="score"
-                :gameState="gameState"
-                @startGame="startGame"
-            ></Summary>
+            <Summary :info="{ numMoves, highest, score, gameState }" @startGame="startGame"></Summary>
             <div class="tiles">
                 <template v-for="row in 4">
                     <template v-for="col in 4">
-                        <Tile :key="`tile-${row}-${col}`" :tiles="tiles" :row="row" :col="col"></Tile>
+                        <Tile :key="`tile-${row}-${col}`" :tile="tiles[row - 1][col - 1]" :row="row" :col="col"></Tile>
                     </template>
                 </template>
                 <div class="overlay" :class="{ show: gameState === 'OVER' || gameState === 'WON' }">
