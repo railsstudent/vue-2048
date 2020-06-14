@@ -329,26 +329,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 $background-color: #bbada0;
-$tile-border-color: #9a9a9a;
-$tile-empty-color: rgba(238, 228, 218, 0.35);
-$background-2: #eee4da;
-$background-4: #ede0c8;
-$background-8: #f2b179;
-$background-16: #f59563;
-$background-32: #f67c5f;
-$background-64: #f65e3b;
-$background-128: #edcf72;
-$background-256: #edcc61;
-$background-512: #edc850;
-$background-1024: #edc53f;
-$background-2048: #edc22e;
-
-$color-2: #776e65;
-$color-8: #f9f6f2;
 
 .container {
     --grid-columns: repeat(4, 105px);
-    --font-size: 3.2em;
 
     display: flex;
     flex-direction: row;
@@ -369,104 +352,6 @@ $color-8: #f9f6f2;
             "a9 a10 a11 a12"
             "a13 a14 a15 a16";
         border: 3px solid darken($background-color, 1.5);
-
-        .tile-1-1,
-        .tile-1-2,
-        .tile-1-3,
-        .tile-1-4,
-        .tile-2-1,
-        .tile-2-2,
-        .tile-2-3,
-        .tile-2-4,
-        .tile-3-1,
-        .tile-3-2,
-        .tile-3-3,
-        .tile-3-4,
-        .tile-4-1,
-        .tile-4-2,
-        .tile-4-3,
-        .tile-4-4 {
-            border-color: transparent;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            span {
-                font-size: var(--font-size);
-                font-weight: 600;
-            }
-        }
-
-        > div.background- {
-            &-1 {
-                background: $tile-empty-color;
-            }
-
-            &2,
-            &4 {
-                color: $color-2;
-            }
-
-            &2 {
-                background: $background-2;
-            }
-
-            &4 {
-                background: $background-4;
-            }
-
-            &8,
-            &16,
-            &32,
-            &64,
-            &128,
-            &256,
-            &512,
-            &1024 {
-                color: $color-8;
-            }
-
-            &8 {
-                background: $background-8;
-            }
-
-            &16 {
-                background: $background-16;
-            }
-
-            &32 {
-                background: $background-32;
-            }
-
-            &64 {
-                background: $background-64;
-            }
-
-            &128 {
-                background: $background-128;
-            }
-
-            &256 {
-                background: $background-256;
-                box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.31746), inset 0 0 0 1px rgba(255, 255, 255, 0.19048);
-            }
-
-            &512 {
-                background: $background-512;
-                box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.39683), inset 0 0 0 1px rgba(255, 255, 255, 0.2381);
-            }
-
-            &1024 {
-                background: $background-1024;
-                box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.47619), inset 0 0 0 1px rgba(255, 255, 255, 0.28571);
-            }
-
-            &2048 {
-                background: $background-2048;
-                box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556), inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
-            }
-        }
 
         .tile-1-1 {
             grid-area: a1;
@@ -531,15 +416,6 @@ $color-8: #f9f6f2;
         .tile-4-4 {
             grid-area: a16;
         }
-
-        .tile-merged {
-            animation: merged 0.3s ease 100ms;
-            animation-fill-mode: backwards;
-        }
-
-        .tile-new {
-            animation: bounce-in 0.2s;
-        }
     }
 
     .full {
@@ -576,40 +452,11 @@ $color-8: #f9f6f2;
             }
         }
     }
-
-    @keyframes bounce-in {
-        0% {
-            transform: scale(0);
-        }
-
-        50% {
-            transform: scale(0.5);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-    }
-
-    @keyframes merged {
-        0% {
-            transform: scale(0);
-        }
-
-        50% {
-            transform: scale(1.2);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-    }
 }
 
 @media screen and (min-width: 355px) and (max-width: 499px) {
     .container {
         --grid-columns: repeat(4, 70px);
-        --font-size: 2.2em;
     }
 }
 </style>
