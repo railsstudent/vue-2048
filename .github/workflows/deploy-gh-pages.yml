@@ -20,5 +20,6 @@
 
         - name: Run deploy script
           run: |
-            git config user.name "railsstudent" && git config user.email "cleung334@gmail.com"
+            git config --global user.name "railsstudent" 
+            git config --global user.email "cleung334@gmail.com"
             npm run deploy
