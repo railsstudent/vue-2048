@@ -38,12 +38,14 @@ $button-color: #007bff;
     width: 100%;
 
     .stats {
+        --font-size: 1.2em;
+
         display: flex;
         justify-content: space-between;
 
         .score {
             padding: 10px;
-            font-size: 1.2em;
+            font-size: var(--font-size);
             font-weight: bold;
         }
     }
@@ -67,6 +69,12 @@ $button-color: #007bff;
         display: inline-block;
         vertical-align: middle;
         transition: ease-in-out, background-color 0.15s;
+    }
+}
+
+@media screen and (min-width: 355px) and (max-width: 499px) {
+    .actions .stats {
+        --font-size: 1em;
     }
 }
 </style>

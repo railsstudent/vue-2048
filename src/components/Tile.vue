@@ -1,6 +1,6 @@
 <template>
-    <div :class="[`tile-${row}-${col}`, `background-${currentTile.value}`, currentTile.newlyAdded ? 'tile-new' : '']">
-        <span v-if="currentTile.value !== -1" :class="['tile-span', currentTile.merged ? 'tile-merged' : '']">
+    <div :class="['tile', tileCssClass, backgroundCsssClass, newTileCssClass]">
+        <span v-if="currentTile && currentTile.value !== -1" :class="[mergeCssClass]">
             {{ currentTile.value }}
         </span>
     </div>
@@ -17,6 +17,18 @@ export default {
     computed: {
         currentTile() {
             return this.row >= 1 && this.col >= 1 ? this.tiles[this.row - 1][this.col - 1] : null;
+        },
+        tileCssClass() {
+            return `tile-${this.row}-${this.col}`;
+        },
+        backgroundCsssClass() {
+            return this.currentTile && this.currentTile.value ? `background-${this.currentTile.value}` : "";
+        },
+        newTileCssClass() {
+            return this.currentTile && this.currentTile.newlyAdded ? "tile-new" : "";
+        },
+        mergeCssClass() {
+            return this.currentTile && this.currentTile.merged ? "tile-merged" : "";
         },
     },
 };
@@ -41,26 +53,9 @@ $background-2048: #edc22e;
 $color-2: #776e65;
 $color-8: #f9f6f2;
 
-.tile-span {
+.tile {
     --font-size: 3.2em;
-}
 
-.tile-1-1,
-.tile-1-2,
-.tile-1-3,
-.tile-1-4,
-.tile-2-1,
-.tile-2-2,
-.tile-2-3,
-.tile-2-4,
-.tile-3-1,
-.tile-3-2,
-.tile-3-3,
-.tile-3-4,
-.tile-4-1,
-.tile-4-2,
-.tile-4-3,
-.tile-4-4 {
     border-color: transparent;
     border-radius: 8px;
     display: flex;
@@ -194,7 +189,7 @@ div.background- {
 }
 
 @media screen and (min-width: 355px) and (max-width: 499px) {
-    .tile-span {
+    .tile {
         --font-size: 2.2em;
     }
 }
