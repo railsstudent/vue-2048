@@ -1,9 +1,9 @@
  name: Deploy to github pages
-  on:
+ on:
    push:
     branches:
      - master
-  jobs:
+ jobs:
     gh-pages-deploy:
       name: Deploying to gh-pages
       runs-on: ubuntu-latest
