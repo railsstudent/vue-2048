@@ -18,8 +18,11 @@
         - name: Clean install dependencies
           run: npm ci
 
-        - name: Run deploy script
-          run: |
-            git config --global user.name "railsstudent" 
-            git config --global user.email "cleung334@gmail.com"
-            npm run deploy
+        - name: Build app
+          run: npm run build
+        
+        - name: deploy
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+           github_token: ${{ secrets.ACCESS_TOKEN }}
+           publish_dir: ./dist
