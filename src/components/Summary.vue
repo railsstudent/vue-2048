@@ -6,7 +6,7 @@
             <div class="score">Score: {{ info.score }}</div>
         </div>
         <div class="buttons">
-            <button class="btn" v-if="info.gameState !== 'RUNNING'" :click="startGame">Start Game</button>
+            <button class="btn" v-if="info.gameState !== 'RUNNING'" @click="startGame">Start Game</button>
         </div>
     </div>
 </template>
