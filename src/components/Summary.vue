@@ -2,7 +2,8 @@
     <div class="actions">
         <div class="stats">
             <div class="score">Num Moves: {{ info.numMoves }}</div>
-            <div class="score">Current highest tile: {{ info.highest }}</div>
+            <div class="score">Avg merge: {{ avg }} secs</div>
+            <div class="score">Highest tile: {{ info.highest }}</div>
             <div class="score">Score: {{ info.score }}</div>
         </div>
         <div class="buttons">
@@ -15,7 +16,13 @@
 export default {
     name: "Summary",
     props: {
-        info: { numMoves: Number, highest: Number, score: Number, gameState: String },
+        info: { numMoves: Number, highest: Number, score: Number, gameState: String, timeDiff: Number },
+    },
+    computed: {
+        avg() {
+            const { timeDiff, numMoves } = this.info;
+            return (timeDiff / Math.max(1, numMoves) / 1000).toFixed(2);
+        },
     },
     methods: {
         startGame() {
@@ -39,11 +46,13 @@ $button-color: #007bff;
 
         display: flex;
         justify-content: space-between;
+        flex-wrap: wrap;
 
         .score {
             padding: 10px;
             font-size: var(--font-size);
             font-weight: bold;
+            line-height: 2em;
         }
     }
 

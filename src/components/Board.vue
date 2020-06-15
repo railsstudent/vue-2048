@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="full">
-            <Summary :info="{ numMoves, highest, score, gameState }" @startGame="startGame"></Summary>
+            <Summary :info="{ numMoves, highest, score, gameState, timeDiff }" @startGame="startGame"></Summary>
             <div class="tiles">
                 <template v-for="row in 4">
                     <template v-for="col in 4">
@@ -71,7 +71,14 @@ export default {
             highest: 0,
             score: 0,
             numMoves: 0,
+            startTime: 0,
+            currentTime: 0,
         };
+    },
+    computed: {
+        timeDiff() {
+            return this.currentTime - this.startTime;
+        },
     },
     methods: {
         validIndex(idx) {
@@ -202,6 +209,7 @@ export default {
                     merged: true,
                 });
                 this.assignTile(tiles, { row: r, col: c, value: -1 });
+                this.currentTime = new Date().getTime();
                 return tiles[nextR][nextC].value;
             }
             return -1;
@@ -247,6 +255,8 @@ export default {
                 this.score = 0;
                 this.highest = 0;
                 this.numMoves = 0;
+                this.startTime = new Date().getTime();
+                this.currentTime = this.startTime;
                 this.clone();
                 this.gameState = STATE.running;
                 const { row: row1, col: col1, value: value1 } = this.addRandomTile() || {};
