@@ -8,7 +8,6 @@
         "test:unit": "jest --clearCache && vue-cli-service test:unit",
         "test:e2e": "jest --clearCache && vue-cli-service test:e2e",
         "lint": "vue-cli-service lint",
-        "deploy": "NODE_ENV=production ./deploy.sh",
         "lint:scss": "stylelint --fix **/*.vue",
         "pretty-quick": "pretty-quick",
         "serve:coverage": "http-server coverage/lcov-report -p 8888",
